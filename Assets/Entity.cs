@@ -11,6 +11,9 @@ public class Entity : MonoBehaviour
     // Start is called before the first frame update
     // public List<IEnumerator> Tasks;
     public int team;//0:中立,それ以外がそれぞれのチーム
+    public int maxHp;
+    public int hp;
+
     public List<IEnumerator> Tasks;
     void Start()
     {
@@ -36,6 +39,8 @@ public class Entity : MonoBehaviour
     void Update()
     {
     }
+
+
     IEnumerator taskExecute()
     {
         while (true)
@@ -65,5 +70,6 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(2);
 
     }
+
 
 }

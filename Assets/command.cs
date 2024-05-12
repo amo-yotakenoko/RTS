@@ -80,8 +80,8 @@ public class command : MonoBehaviour
     {
         foreach (Entity e in selectingEntity)
         {
-            print("moveToEntityCMD");
-            print(e.setTask("moveToEntityCMD", new object[] { enemy }));
+            // print("moveToEntityCMD");
+            print(e.setTask("AttackToEntityCMD", new object[] { enemy }));
 
         }
     }
