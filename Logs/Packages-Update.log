@@ -40,3 +40,11 @@ The following packages were 更新済:
   com.unity.collab-proxy をバージョン 1.13.5 から 2.2.0 へ
   com.unity.timeline をバージョン 1.6.2 から 1.7.6 へ
   com.unity.visualscripting をバージョン 1.7.6 から 1.9.1 へ
+
+=== Tue May 14 12:22:51 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were 更新済:
+  com.unity.visualscripting をバージョン 1.9.1 から 1.9.4 へ

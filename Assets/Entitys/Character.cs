@@ -99,10 +99,31 @@ public class Character : Entity
             // yield return new WaitForSeconds(1);
             // if ()
             // print(navmesh.pathStatus);
+
+        Entity enemy= getWithInReachEntity();
+        if(enemy!=null){
+                navmesh.isStopped = true;
+           enemy.damage(5);
+                yield return new WaitForSeconds(0.1f);//クールタイム
+            navmesh.isStopped = false;
+        }
+
             yield return null;
 
 
         } while (target != null);
         Destroy(line);
+    }
+
+    Entity getWithInReachEntity(float r=0.5f){
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position+transform.forward*r*2, r);
+        foreach (var hit in hitColliders)
+        {
+            Entity  entity = hit.gameObject.GetComponent<Entity>();
+            if(entity!=null&&entity.team!=this.team)  {
+                return entity;
+            }  
+        }
+        return null;
     }
 }

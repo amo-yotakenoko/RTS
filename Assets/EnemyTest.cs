@@ -10,6 +10,6 @@ public class EnemyTest : Entity
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = new Vector3(Mathf.Sin(Time.time), 0, Mathf.Cos(Time.time)) * 5 + new Vector3(5, 0, 0);
+        this.transform.position = new Vector3(Mathf.Sin(Time.time), 1f/5f, Mathf.Cos(Time.time)) * 5 + new Vector3(5, 0, 0);
     }
 }
