@@ -15,7 +15,7 @@ public class EntityUI : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
-        hpBar.fillRect.GetComponent<Image>().color = new Color[] { Color.blue, Color.green, Color.red }[entity.team];
+        hpBar.fillRect.GetComponent<Image>().color = Entity.teamColors[entity.team];
     }
 
     // Update is called once per frame

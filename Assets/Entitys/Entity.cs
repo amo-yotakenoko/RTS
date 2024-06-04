@@ -8,6 +8,19 @@ using System.Reflection;
 
 public class Entity : MonoBehaviour
 {
+    public static readonly Color[] teamColors = new Color[]
+   {
+        Color.blue,
+        Color.green,
+        Color.red,
+        Color.yellow,
+        Color.magenta,
+        Color.cyan,
+        new Color(1.0f, 0.5f, 0.0f),  // オレンジ
+        new Color(0.5f, 0.0f, 0.5f),  // パープル
+        new Color(0.0f, 0.5f, 0.5f),  // ティール
+        new Color(0.5f, 0.5f, 0.0f)   // オリーブ
+   };
     // Start is called before the first frame update
     // public List<IEnumerator> Tasks;
     public int team;//0:中立,それ以外がそれぞれのチーム

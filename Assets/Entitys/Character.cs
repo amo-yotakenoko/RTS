@@ -99,7 +99,20 @@ public class Character : Entity
 
     }
 
-    Entity getWithInReachEntity(float r = 0.5f)//攻撃できるオブジェクトを返す
+    public IEnumerator AttackCMD(Entity target)//AI用
+    {
+        NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
+        Entity enemy = getWithInReachEntity();
+        if (enemy != null)
+        {
+            navmesh.isStopped = true;
+            enemy.damage(5);
+            yield return new WaitForSeconds(0.1f);//クールタイム
+            navmesh.isStopped = false;
+        }
+    }
+
+    public Entity getWithInReachEntity(float r = 0.5f)//攻撃できるオブジェクトを返す
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position + transform.forward * r * 2, r);
         foreach (var hit in hitColliders)
