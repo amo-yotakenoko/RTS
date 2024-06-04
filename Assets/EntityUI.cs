@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Reflection;
+using System.ComponentModel;
 public class EntityUI : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -14,6 +15,7 @@ public class EntityUI : MonoBehaviour
     void Start()
     {
         entity = GetComponent<Entity>();
+        hpBar.fillRect.GetComponent<Image>().color = new Color[] { Color.blue, Color.green, Color.red }[entity.team];
     }
 
     // Update is called once per frame

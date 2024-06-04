@@ -15,23 +15,26 @@ public class Entity : MonoBehaviour
     public int hp;
 
     public List<IEnumerator> Tasks;
-    void Start()
+    protected virtual void Start()
     {
         Tasks = new List<IEnumerator>();
         StartCoroutine(taskExecute());
     }
 
-public virtual void damage(int damage){
+    public virtual void damage(int damage)
+    {
         hp -= damage;
         print("damageを受けた");
-        if(hp<=0){
+        if (hp <= 0)
+        {
             killed();
         }
-}
-//オーバーライトして消滅せず壊れるだけにしてもいい
- protected virtual void killed(){
+    }
+    //オーバーライトして消滅せず壊れるだけにしてもいい
+    protected virtual void killed()
+    {
         Destroy(this.gameObject);
-}
+    }
 
     public bool setTask(string cmd, object[] arguments)
     {
@@ -47,7 +50,7 @@ public virtual void damage(int damage){
 
     // Update is called once per frame
 
-    void Update()
+    protected virtual void Update()
     {
     }
 

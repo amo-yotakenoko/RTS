@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Tree : Entity
 {
-   protected  override void killed(){
-        print("復活!");
-        hp += 10;
+    protected override void Start()
+    {
+        GetComponent<Renderer>().material.color = Color.green;//仮対応
+        base.Start();
     }
-    public override void damage(int damage){
-        // https://futabazemi.net/unity/random_color
-        // ダメージを受けると色が変わる
-        GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
+    protected override void killed()
+    {
+        //TODO:お金を手に入れる処理
+        base.killed();
+    }
+    public override void damage(int damage)
+    {
 
-        //元あったプログラムを上書きしてるので必要な奴は書き足して
-        hp -= damage;
-        if(hp<=0){
-            killed();
-        }
+        base.damage(damage);
     }
 }
