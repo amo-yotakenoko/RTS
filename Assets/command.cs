@@ -38,6 +38,10 @@ public class command : MonoBehaviour
             }
 
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            selectingEntity.Clear();
+        }
         showSelecting();
     }
 

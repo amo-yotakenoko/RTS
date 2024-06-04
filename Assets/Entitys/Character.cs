@@ -85,7 +85,7 @@ public class Character : Entity
             if (enemy != null)
             {
                 navmesh.isStopped = true;
-                enemy.damage(5);
+                enemy.damage(2, team);
                 yield return new WaitForSeconds(0.1f);//クールタイム
                 navmesh.isStopped = false;
             }
@@ -106,8 +106,8 @@ public class Character : Entity
         if (enemy != null)
         {
             navmesh.isStopped = true;
-            enemy.damage(5);
-            yield return new WaitForSeconds(0.1f);//クールタイム
+            enemy.damage(2, team);
+            yield return new WaitForSeconds(1f);//クールタイム
             navmesh.isStopped = false;
         }
     }

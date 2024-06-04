@@ -34,19 +34,21 @@ public class Entity : MonoBehaviour
         StartCoroutine(taskExecute());
     }
 
-    public virtual void damage(int damage)
+    public virtual void damage(int damage, int attackedTeam = 0)
     {
         hp -= damage;
         print("damageを受けた");
         if (hp <= 0)
         {
-            killed();
+            killed(attackedTeam);
         }
     }
     //オーバーライトして消滅せず壊れるだけにしてもいい
-    protected virtual void killed()
+    protected virtual void killed(int attackedTeam = 0)
     {
         Destroy(this.gameObject);
+        // team = attackedTeam;
+        // hp = maxHp;
     }
 
     public bool setTask(string cmd, object[] arguments)
