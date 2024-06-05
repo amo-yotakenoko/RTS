@@ -37,7 +37,7 @@ public class Entity : MonoBehaviour
     public virtual void damage(int damage, int attackedTeam = 0)
     {
         hp -= damage;
-        print("damageを受けた");
+        // print("damageを受けた");
         if (hp <= 0)
         {
             killed(attackedTeam);

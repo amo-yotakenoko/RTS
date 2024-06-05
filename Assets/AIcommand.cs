@@ -6,15 +6,47 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
+using System.IO;
 public class AIcommand : MonoBehaviour
 {
+    [System.Serializable]
+    public class Parameter
+    {
+        public float attack;      // 攻撃する閾値
+        public float escape;      // 逃げる閾値
+        private float _scattering; // 拡散
+        public float scattering
+        {
+            get { return _scattering; }
+            set { _scattering = Mathf.Clamp(value, -1f, 2f); }
+        }
+        public float attackVector; // 攻撃ベクトル
+        public float escapeVector; // 逃げるベクトル
+        public float backVector;   // バックベクトル
+
+        public override string ToString()
+        {
+            return $"{attack},{escape},{scattering},{attackVector},{escapeVector},{backVector}";
+        }
+
+        public void RandomizeParameters(float maxDelta = 1f)
+        {
+            attack += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            escape += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            scattering += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            attackVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            escapeVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            backVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
 
     }
     public int team;
-    public float bravery;
+    // public float bravery;
+    public Parameter parameter;
 
     // Update is called once per frame
     void Update()
@@ -36,7 +68,8 @@ public class AIcommand : MonoBehaviour
                 }
             }
         }
-        foreach (var character in GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team))
+        List<Character> myTeamCharacters = GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList();
+        foreach (var character in myTeamCharacters)
         {
             if (character.Tasks.Count <= 0)
             {
@@ -54,7 +87,11 @@ public class AIcommand : MonoBehaviour
 
 
                 Vector3 targetpos = character.transform.position;
-
+                foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
+                {
+                    Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
+                    targetpos += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
+                }
 
                 // targetpos += power.grad.normalized;//仲間と集まる
 
@@ -64,18 +101,20 @@ public class AIcommand : MonoBehaviour
                 //     //自陣に逃げる
                 // targetpos = character.transform.position + power.grad.normalized;
                 // }
-                print(power.power + "," + enemypower.power);
-                if (power.power + bravery > enemypower.power)
+                // print(power.power + "," + enemypower.power);
+                if (power.power + parameter.attack > enemypower.power)
                 {
-                    targetpos += enemypower.grad.normalized * 5;
-                    print("おっかけ");
+                    targetpos += enemypower.grad.normalized * parameter.attackVector;
+                    // print("おっかけ");
 
                 }
-                else if (power.power + bravery < enemypower.power)
+                else if (power.power + parameter.escape < enemypower.power)
                 {
-                    targetpos -= enemypower.grad.normalized * 3;
-                    targetpos += power.grad.normalized * 5;
+                    targetpos -= enemypower.grad.normalized * parameter.escapeVector;
+                    targetpos += power.grad.normalized * parameter.backVector;
                 }
+
+
                 // else if (enemypower.power > 0)
                 // {
                 //     print("逃げ");
