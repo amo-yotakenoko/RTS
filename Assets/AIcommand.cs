@@ -86,39 +86,39 @@ public class AIcommand : MonoBehaviour
 
 
 
-                Vector3 targetpos = character.transform.position;
+                Vector3 destination = new Vector3(0,0,0);
                 foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
                 {
                     Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
-                    targetpos += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
+                    destination += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
                 }
 
-                // targetpos += power.grad.normalized;//仲間と集まる
+                // destination += power.grad.normalized;//仲間と集まる
 
                 // if (power.power + enemypower.power < 0)
                 // {
                 //     print("にげ");
                 //     //自陣に逃げる
-                // targetpos = character.transform.position + power.grad.normalized;
+                // destination = character.transform.position + power.grad.normalized;
                 // }
                 // print(power.power + "," + enemypower.power);
                 if (power.power + parameter.attack > enemypower.power)
                 {
-                    targetpos += enemypower.grad.normalized * parameter.attackVector;
+                    destination += enemypower.grad.normalized * parameter.attackVector;
                     // print("おっかけ");
 
                 }
                 else if (power.power + parameter.escape < enemypower.power)
                 {
-                    targetpos -= enemypower.grad.normalized * parameter.escapeVector;
-                    targetpos += power.grad.normalized * parameter.backVector;
+                    destination -= enemypower.grad.normalized * parameter.escapeVector;
+                    destination += power.grad.normalized * parameter.backVector;
                 }
 
 
                 // else if (enemypower.power > 0)
                 // {
                 //     print("逃げ");
-                //     targetpos += power.grad.normalized * 5;
+                //     destination += power.grad.normalized * 5;
                 // }
 
 
@@ -126,7 +126,7 @@ public class AIcommand : MonoBehaviour
                 if (attackEntity != null) character.setTask("AttackCMD", new object[] { null });
 
 
-                character.GetComponent<NavMeshAgent>().destination = targetpos;
+                character.GetComponent<NavMeshAgent>().destination = character.transform.position+destination.normalized*2;
             }
         }
 
@@ -155,8 +155,8 @@ public class AIcommand : MonoBehaviour
         }
         // print(power);
 
-        Debug.DrawRay(pos, new Vector3(0, power, 0), Entity.teamColors[team]);
-        Debug.DrawRay(pos + new Vector3(0, power, 0), grad / 20f, Entity.teamColors[team]);
+        Debug.DrawRay(pos, new Vector3(0, power*5, 0), Entity.teamColors[team]);
+        Debug.DrawRay(pos + new Vector3(0, power*5, 0), grad / 20f, Entity.teamColors[team]);
         return (power, grad);
     }
     float sigmoid(float x)

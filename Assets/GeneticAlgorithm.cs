@@ -35,6 +35,7 @@ public class GeneticAlgorithm : MonoBehaviour
                 remainingTeam = t;
             }
         }
+
         // if (remainingTeamCOunt == 1)
         // {
         //     // print(AIcommands.Where(x => x.team == remainingTeam).FirstOrDefault().parameter);
@@ -106,6 +107,8 @@ public class GeneticAlgorithm : MonoBehaviour
                 var character = Instantiate(characterPrefab, basePos, Quaternion.identity);
                 character.GetComponent<Entity>().team = teamid;
                 character.GetComponent<UnityEngine.AI.NavMeshAgent>().destination = new Vector3(0, 0, 0);
+                // character.transform.position+=new Vector3(Random.Range(-1,1),Random.Range(-1,1),Random.Range(-1,1));
+                character.transform.position=new Vector3(Random.Range(-1.0f,1.0f),0,Random.Range(-1.0f,1.0f))*20f;
             }
             AIcommand command = gameObject.AddComponent<AIcommand>();
             command.team = teamid;
@@ -113,6 +116,7 @@ public class GeneticAlgorithm : MonoBehaviour
             command.parameter = strongParameter;
             command.parameter.RandomizeParameters();
             AIcommands.Add(command);
+            //    LineRenderer line = AIcommands.AddComponent<LineRenderer>();
             teamid++;
 
         }

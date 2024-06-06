@@ -8,14 +8,36 @@ public class Character : Entity
     // Start is called before the first frame update
 
 
+    LineRenderer line;
+    NavMeshAgent navmesh;
+protected override void Start(){
+  lineSet();
+        // ChangeColor(Entity.teamColors[team]);
+    base.Start();
+}
+void lineSet(){
+  navmesh = GetComponent<NavMeshAgent>();
+ line= gameObject.AddComponent<LineRenderer>();
+    line.material = new Material(Shader.Find("Sprites/Default"));
+     line.startColor = Entity.teamColors[team];
+        line.endColor = Entity.teamColors[team];
+}
+  protected override void Update()
+    {
+          NavMeshPath path = new NavMeshPath();
+               navmesh.CalculatePath(navmesh.destination, path);
+
+            line.SetVertexCount(path.corners.Length);
+            line.SetPositions(path.corners);
+    }
     // public Vector3 targetpos;
     //lineの描画https://indie-du.com/entry/2016/05/21/080000
     public IEnumerator moveCMD(Vector3 targetpos)
     {
-        LineRenderer line = gameObject.AddComponent<LineRenderer>();
-        NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
+        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
+        // NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         navmesh.destination = targetpos;
-        NavMeshPath path = new NavMeshPath();
+        // NavMeshPath path = new NavMeshPath();
 
 
         do
@@ -24,48 +46,48 @@ public class Character : Entity
 
             // print(path.corners.Length);
 
-            navmesh.CalculatePath(targetpos, path);
+            // navmesh.CalculatePath(targetpos, path);
 
-            line.SetVertexCount(path.corners.Length);
-            line.SetPositions(path.corners);
+            // line.SetVertexCount(path.corners.Length);
+            // line.SetPositions(path.corners);
             yield return null;
             // print(navmesh.pathStatus);
         } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
-        Destroy(line);
+        // Destroy(line);
 
     }
 
     public IEnumerator moveToEntityCMD(Entity target)
     {
-        LineRenderer line = gameObject.AddComponent<LineRenderer>();
+        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
-        NavMeshPath path = new NavMeshPath();
+        // NavMeshPath path = new NavMeshPath();
 
         do
         {
-            navmesh.destination = target.transform.position;
+            // navmesh.destination = target.transform.position;
 
 
-            navmesh.destination = target.transform.position;
-            navmesh.CalculatePath(target.transform.position, path);
+            // navmesh.destination = target.transform.position;
+            // navmesh.CalculatePath(target.transform.position, path);
 
-            // print(navmesh.pathPending + "," + navmesh.remainingDistance);
+            // // print(navmesh.pathPending + "," + navmesh.remainingDistance);
 
-            Vector3[] corners = new Vector3[10];
-            navmesh.CalculatePath(target.transform.position, path);
-            int cornerCount = path.GetCornersNonAlloc(corners);
-            line.SetVertexCount(cornerCount);
-            line.SetPositions(corners);
+            // Vector3[] corners = new Vector3[10];
+            // navmesh.CalculatePath(target.transform.position, path);
+            // int cornerCount = path.GetCornersNonAlloc(corners);
+            // line.SetVertexCount(cornerCount);
+            // line.SetPositions(corners);
             // yield return new WaitForSeconds(1);
             yield return null;
 
         } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
-        Destroy(line);
+        // Destroy(line);
     }
 
     public IEnumerator AttackToEntityCMD(Entity target)
     {
-        LineRenderer line = gameObject.AddComponent<LineRenderer>();
+        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
 
 
@@ -75,10 +97,10 @@ public class Character : Entity
 
 
 
-            NavMeshPath path = new NavMeshPath();
-            navmesh.CalculatePath(target.transform.position, path);
-            line.SetVertexCount(path.corners.Length);
-            line.SetPositions(path.corners);
+            // NavMeshPath path = new NavMeshPath();
+            // navmesh.CalculatePath(target.transform.position, path);
+            // line.SetVertexCount(path.corners.Length);
+            // line.SetPositions(path.corners);
 
 
             Entity enemy = getWithInReachEntity();
@@ -94,7 +116,7 @@ public class Character : Entity
 
 
         } while (target != null);
-        Destroy(line);
+        // Destroy(line);
 
 
     }
