@@ -818,13 +818,14 @@ MonoBehaviour:
   - {x: -20, y: 0, z: -20}
   AIcommands: []
   strongParameter:
-    attack: 10
-    escape: 1
+    attack: 0
+    escape: 0
+    scattering: 0
     attackVector: 5
     escapeVector: 5
     backVector: 5
   matchTime: 0
-  timescale: 10
+  timescale: 1
 --- !u!1 &1932073849
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,17 +9,19 @@ using UnityEngine.UIElements;
 using System.IO;
 public class AIcommand : MonoBehaviour
 {
+   public float sumAddDamage;
+
+   public int countCharacters(){
+    return  GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList().Count();
+   }
     [System.Serializable]
     public class Parameter
     {
         public float attack;      // 攻撃する閾値
         public float escape;      // 逃げる閾値
-        private float _scattering; // 拡散
-        public float scattering
-        {
-            get { return _scattering; }
-            set { _scattering = Mathf.Clamp(value, -1f, 2f); }
-        }
+  
+        public float scattering;//拡散
+        
         public float attackVector; // 攻撃ベクトル
         public float escapeVector; // 逃げるベクトル
         public float backVector;   // バックベクトル
@@ -31,12 +33,28 @@ public class AIcommand : MonoBehaviour
 
         public void RandomizeParameters(float maxDelta = 1f)
         {
+
+    switch (Random.Range(0, 6))
+    {
+        case 0:
             attack += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+        case 1:
             escape += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+        case 2:
             scattering += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+        case 3:
             attackVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+        case 4:
             escapeVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+        case 5:
             backVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+            break;
+    }
         }
     }
     // Start is called before the first frame update
@@ -51,6 +69,7 @@ public class AIcommand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // return;
         if (Input.GetKey(KeyCode.Space))
         {
 
@@ -59,11 +78,10 @@ public class AIcommand : MonoBehaviour
                 for (int z = -20; z < 20; z += 2)
                 {
                     Vector3 pos = new Vector3(x, 0, z);
-                    for (int i = 0; i < 5; i++)
-                    {
-                        var enemypower = getPower(pos, i);
+                  
+                        var enemypower = getPower(pos, team);
 
-                    }
+                    
 
                 }
             }
@@ -84,9 +102,12 @@ public class AIcommand : MonoBehaviour
                     enemypower.grad += ep.grad;
                 }
 
-
+//  return;
 
                 Vector3 destination = new Vector3(0,0,0);
+
+
+
                 foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
                 {
                     Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
@@ -123,7 +144,10 @@ public class AIcommand : MonoBehaviour
 
 
                 Entity attackEntity = character.getWithInReachEntity();
-                if (attackEntity != null) character.setTask("AttackCMD", new object[] { null });
+                if (attackEntity != null) {
+                    sumAddDamage+=1;
+                    character.setTask("AttackCMD", new object[] { null });
+                }
 
 
                 character.GetComponent<NavMeshAgent>().destination = character.transform.position+destination.normalized*2;

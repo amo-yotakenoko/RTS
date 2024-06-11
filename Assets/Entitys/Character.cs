@@ -10,25 +10,27 @@ public class Character : Entity
 
     LineRenderer line;
     NavMeshAgent navmesh;
-protected override void Start(){
-  lineSet();
-        // ChangeColor(Entity.teamColors[team]);
-    base.Start();
-}
-void lineSet(){
-  navmesh = GetComponent<NavMeshAgent>();
- line= gameObject.AddComponent<LineRenderer>();
-    line.material = new Material(Shader.Find("Sprites/Default"));
-     line.startColor = Entity.teamColors[team];
-        line.endColor = Entity.teamColors[team];
-}
-  protected override void Update()
+    protected override void Start()
     {
-          NavMeshPath path = new NavMeshPath();
-               navmesh.CalculatePath(navmesh.destination, path);
+        lineSet();
+        // ChangeColor(Entity.teamColors[team]);
+        base.Start();
+    }
+    void lineSet()
+    {
+        navmesh = GetComponent<NavMeshAgent>();
+        line = gameObject.AddComponent<LineRenderer>();
+        line.material = new Material(Shader.Find("Sprites/Default"));
+        line.startColor = Entity.teamColors[team];
+        line.endColor = Entity.teamColors[team];
+    }
+    protected override void Update()
+    {
+        NavMeshPath path = new NavMeshPath();
+        navmesh.CalculatePath(navmesh.destination, path);
 
-            line.SetVertexCount(path.corners.Length);
-            line.SetPositions(path.corners);
+        line.SetVertexCount(path.corners.Length);
+        line.SetPositions(path.corners);
     }
     // public Vector3 targetpos;
     //lineの描画https://indie-du.com/entry/2016/05/21/080000
@@ -65,7 +67,7 @@ void lineSet(){
 
         do
         {
-            // navmesh.destination = target.transform.position;
+            navmesh.destination = target.transform.position;
 
 
             // navmesh.destination = target.transform.position;

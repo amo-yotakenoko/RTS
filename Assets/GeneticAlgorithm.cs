@@ -21,6 +21,11 @@ public class GeneticAlgorithm : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+
+
+        
         Time.timeScale = timescale;
         matchTime += Time.deltaTime;
         int remainingTeamCOunt = 0;
@@ -65,25 +70,27 @@ public class GeneticAlgorithm : MonoBehaviour
     }
 
 
-    int GetTeamWithMostCharacters()
+    int GetTeamWithMostScore()
     {
         // チームごとのキャラクター数をカウントする辞書
-        var teamCounts = GameObject.FindGameObjectsWithTag("entity")
-            .Select(x => x.GetComponent<Character>())
-            .Where(x => x != null)
-            .GroupBy(x => x.team)
-            .Select(g => new { Team = g.Key, Count = g.Count() })
-            .ToDictionary(x => x.Team, x => x.Count);
+        // var teamCounts = GameObject.FindGameObjectsWithTag("entity")
+        //     .Select(x => x.GetComponent<Character>())
+        //     .Where(x => x != null)
+        //     .GroupBy(x => x.team)
+        //     .Select(g => new { Team = g.Key, Count = g.Count() })
+        //     .ToDictionary(x => x.Team, x => x.Count);
 
-        // すべてのAIcommandsの中から最大のキャラクター数を持つチームを取得する
-        var maxTeam = AIcommands
-            .Select(command => command.team)
-            .GroupBy(team => team)
-            .Select(g => new { Team = g.Key, Count = teamCounts.ContainsKey(g.Key) ? teamCounts[g.Key] : 0 })
-            .OrderByDescending(tc => tc.Count)
-            .FirstOrDefault();
+        // // すべてのAIcommandsの中から最大のキャラクター数を持つチームを取得する
+        // var maxTeam = AIcommands
+        //     .Select(command => command.team)
+        //     .GroupBy(team => team)
+        //     .Select(g => new { Team = g.Key, Count = teamCounts.ContainsKey(g.Key) ? teamCounts[g.Key] : 0 })
+        //     .OrderByDescending(tc => tc.Count)
+        //     .FirstOrDefault();
+      var mostScoreTeam=  AIcommands.OrderByDescending(x => x.sumAddDamage+x.countCharacters()).FirstOrDefault();
 
-        return maxTeam != null ? maxTeam.Team : -1; // キャラクターがいない場合、-1 を返す
+
+        return mostScoreTeam != null ? mostScoreTeam.team : -1; // キャラクターがいない場合、-1 を返す
     }
 
     void reset()
@@ -102,7 +109,7 @@ public class GeneticAlgorithm : MonoBehaviour
         int teamid = 1;
         foreach (var basePos in basePositions)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 25; i++)
             {
                 var character = Instantiate(characterPrefab, basePos, Quaternion.identity);
                 character.GetComponent<Entity>().team = teamid;
