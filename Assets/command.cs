@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
 using System.Reflection;
+using System;
+using UnityEngine.Events;
 public class command : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -15,6 +17,7 @@ public class command : MonoBehaviour
     public List<Entity> selectingEntity = new List<Entity>();
     public Mesh selectingMarkMesh;
     public Material selectingMarkMaterial;//TODO:ここシェーダグラフとか使っていい感じにしよう
+    public GameObject piMenuprefab;
     // Update is called once per frame
     void Update()
     {
@@ -44,11 +47,11 @@ public class command : MonoBehaviour
         }
         showSelecting();
     }
-
+    piMenu pimenu;
     void entitySelect(Entity entity)
     {
 
-
+        Destroy(pimenu);
         if (!selectingEntity.Contains(entity))
         {
             if (!Input.GetKey(KeyCode.LeftShift)) selectingEntity.Clear();
@@ -59,13 +62,30 @@ public class command : MonoBehaviour
             selectingEntity.Remove(entity);
         }
 
+        foreach (Entity e in selectingEntity)
+        {
+            var existTasks = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+         .Where(x => x.Name.EndsWith("CMD"))
+         .Where(x => x.GetParameters().Length == 0);
+            pimenu = Instantiate(piMenuprefab, entity.transform.position + new Vector3(0, 20, 0), piMenuprefab.transform.rotation).GetComponent<piMenu>();
+            foreach (var existTask in existTasks)
+            {
+                UnityAction action = () => e.setTask(existTask.Name, new object[] { });
+                pimenu.add(action, $"{existTask.Name}");
+            }
+
+        }
         //リフレクションでいろいろhttps://qiita.com/gushwell/items/91436bd1871586f6e663
         //メソッドを取得
-        //  var existTasks = entity.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-        //    .Where(x => x.Name.EndsWith("CMD"));
+
     }
 
 
+    // public void TaskAdd(System.Reflection.MethodInfo task)
+    // {
+    //     print("taskadd");
+    //     print(e.setTask(task.Name, new object[] { null }));
+    // }
 
 
 

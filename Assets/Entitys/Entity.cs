@@ -99,6 +99,10 @@ public class Entity : MonoBehaviour
         yield return new WaitForSeconds(2);
 
     }
-
+    public IEnumerator DestroyCMD()
+    {
+        Destroy(this.gameObject);
+        yield return null;
+    }
 
 }
