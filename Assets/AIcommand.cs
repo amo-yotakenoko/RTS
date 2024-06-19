@@ -9,19 +9,20 @@ using UnityEngine.UIElements;
 using System.IO;
 public class AIcommand : MonoBehaviour
 {
-   public float sumAddDamage;
+    public float sumAddDamage;
 
-   public int countCharacters(){
-    return  GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList().Count();
-   }
+    public int countCharacters()
+    {
+        return GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList().Count();
+    }
     [System.Serializable]
     public class Parameter
     {
         public float attack;      // 攻撃する閾値
         public float escape;      // 逃げる閾値
-  
+
         public float scattering;//拡散
-        
+
         public float attackVector; // 攻撃ベクトル
         public float escapeVector; // 逃げるベクトル
         public float backVector;   // バックベクトル
@@ -34,27 +35,27 @@ public class AIcommand : MonoBehaviour
         public void RandomizeParameters(float maxDelta = 1f)
         {
 
-    switch (Random.Range(0, 6))
-    {
-        case 0:
-            attack += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-        case 1:
-            escape += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-        case 2:
-            scattering += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-        case 3:
-            attackVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-        case 4:
-            escapeVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-        case 5:
-            backVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
-            break;
-    }
+            switch (Random.Range(0, 6))
+            {
+                case 0:
+                    attack += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+                case 1:
+                    escape += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+                case 2:
+                    scattering += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+                case 3:
+                    attackVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+                case 4:
+                    escapeVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+                case 5:
+                    backVector += UnityEngine.Random.Range(-maxDelta, maxDelta);
+                    break;
+            }
         }
     }
     // Start is called before the first frame update
@@ -78,10 +79,10 @@ public class AIcommand : MonoBehaviour
                 for (int z = -20; z < 20; z += 2)
                 {
                     Vector3 pos = new Vector3(x, 0, z);
-                  
-                        var enemypower = getPower(pos, team);
 
-                    
+                    var enemypower = getPower(pos, team);
+
+
 
                 }
             }
@@ -101,39 +102,64 @@ public class AIcommand : MonoBehaviour
                     enemypower.power += ep.power;
                     enemypower.grad += ep.grad;
                 }
-
-//  return;
-
-                Vector3 destination = new Vector3(0,0,0);
-
-
-
-                foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
-                {
-                    Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
-                    destination += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
-                }
-
-                // destination += power.grad.normalized;//仲間と集まる
-
-                // if (power.power + enemypower.power < 0)
-                // {
-                //     print("にげ");
-                //     //自陣に逃げる
-                // destination = character.transform.position + power.grad.normalized;
-                // }
-                // print(power.power + "," + enemypower.power);
                 if (power.power + parameter.attack > enemypower.power)
                 {
-                    destination += enemypower.grad.normalized * parameter.attackVector;
-                    // print("おっかけ");
+                    //攻め
+                    var attackCandidate = new List<Entity>();
+                    foreach (var enemy in GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Entity>()).Where(x => x != null && x.team != team))
+                    {
+                        var ep = getPower(new Vector3(enemy.transform.position.x, 0, enemy.transform.position.z), enemy.team);
+                        if (ep.power < power.power)
+                        {
+                            attackCandidate.Add(enemy);
+                        }
+                        else
+                        {
+                            // destination += power.grad.normalized * 5;
+                        }
+
+                    }
+                    if (character.Tasks.Count() == 0)
+                    {
+
+                        var sortedAttackCandidate = attackCandidate.OrderBy(enemy => Vector3.Distance(transform.position, enemy.transform.position)).FirstOrDefault();
+                        if (sortedAttackCandidate != null)
+                        {
+
+                            character.setTask("AttackToEntityCMD", new object[] { sortedAttackCandidate });
+                            return;//一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
+                        }
+                    }
 
                 }
-                else if (power.power + parameter.escape < enemypower.power)
+                else
                 {
+                    //逃げ
+                    Vector3 destination = new Vector3(0, 0, 0);
                     destination -= enemypower.grad.normalized * parameter.escapeVector;
                     destination += power.grad.normalized * parameter.backVector;
+                    character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
                 }
+
+
+                // Vector3 destination = new Vector3(0, 0, 0);
+                // foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
+                // {
+                //     Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
+                //     destination += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
+                // }
+
+                // if (power.power + parameter.attack > enemypower.power)
+                // {
+                //     destination += enemypower.grad.normalized * parameter.attackVector;
+                //     // print("おっかけ");
+
+                // }
+                // else if (power.power + parameter.escape < enemypower.power)
+                // {
+                //     destination -= enemypower.grad.normalized * parameter.escapeVector;
+                //     destination += power.grad.normalized * parameter.backVector;
+                // }
 
 
                 // else if (enemypower.power > 0)
@@ -144,17 +170,21 @@ public class AIcommand : MonoBehaviour
 
 
                 Entity attackEntity = character.getWithInReachEntity();
-                if (attackEntity != null) {
-                    sumAddDamage+=1;
+                if (attackEntity != null)
+                {
+                    sumAddDamage += 1;
                     character.setTask("AttackCMD", new object[] { null });
                 }
 
 
-                character.GetComponent<NavMeshAgent>().destination = character.transform.position+destination.normalized*2;
+                // character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
             }
         }
 
     }
+
+
+
     //勢力を取得する、英語だとforceの方があってたりする?
     public (float power, Vector3 grad) getPower(Vector3 pos, int team)
     {
@@ -179,8 +209,8 @@ public class AIcommand : MonoBehaviour
         }
         // print(power);
 
-        Debug.DrawRay(pos, new Vector3(0, power*5, 0), Entity.teamColors[team]);
-        Debug.DrawRay(pos + new Vector3(0, power*5, 0), grad / 20f, Entity.teamColors[team]);
+        Debug.DrawRay(pos, new Vector3(0, power * 5, 0), Entity.teamColors[team]);
+        Debug.DrawRay(pos + new Vector3(0, power * 5, 0), grad / 20f, Entity.teamColors[team]);
         return (power, grad);
     }
     float sigmoid(float x)

@@ -25,7 +25,7 @@ public class GeneticAlgorithm : MonoBehaviour
 
 
 
-        
+
         Time.timeScale = timescale;
         matchTime += Time.deltaTime;
         int remainingTeamCOunt = 0;
@@ -87,7 +87,7 @@ public class GeneticAlgorithm : MonoBehaviour
         //     .Select(g => new { Team = g.Key, Count = teamCounts.ContainsKey(g.Key) ? teamCounts[g.Key] : 0 })
         //     .OrderByDescending(tc => tc.Count)
         //     .FirstOrDefault();
-      var mostScoreTeam=  AIcommands.OrderByDescending(x => x.sumAddDamage+x.countCharacters()).FirstOrDefault();
+        var mostScoreTeam = AIcommands.OrderByDescending(x => x.sumAddDamage + x.countCharacters()).FirstOrDefault();
 
 
         return mostScoreTeam != null ? mostScoreTeam.team : -1; // キャラクターがいない場合、-1 を返す
@@ -114,8 +114,8 @@ public class GeneticAlgorithm : MonoBehaviour
                 var character = Instantiate(characterPrefab, basePos, Quaternion.identity);
                 character.GetComponent<Entity>().team = teamid;
                 character.GetComponent<UnityEngine.AI.NavMeshAgent>().destination = new Vector3(0, 0, 0);
-                // character.transform.position+=new Vector3(Random.Range(-1,1),Random.Range(-1,1),Random.Range(-1,1));
-                character.transform.position=new Vector3(Random.Range(-1.0f,1.0f),0,Random.Range(-1.0f,1.0f))*20f;
+                // character.transform.position += new Vector3(Random.Range(-1, 1), Random.Range(-1, 1), Random.Range(-1, 1));
+                character.transform.position = new Vector3(Random.Range(-1.0f, 1.0f), 0, Random.Range(-1.0f, 1.0f)) * 20f;
             }
             AIcommand command = gameObject.AddComponent<AIcommand>();
             command.team = teamid;

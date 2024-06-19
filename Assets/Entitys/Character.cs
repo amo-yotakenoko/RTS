@@ -118,6 +118,7 @@ public class Character : Entity
 
 
         } while (target != null);
+        yield return null;
         // Destroy(line);
 
 
