@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Hotel : Structure
 {
-    IEnumerator SexCMD()
+    public IEnumerator SexForSoldierCMD()
     {
         print("sex!!!");
+        yield return new WaitForSeconds(5);
+        var instance = Instantiate(soldier);
+        instance.GetComponent<Entity>().team = this.team;
+        instance.transform.position = this.transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)); ;
         yield return null;
     }
+    public GameObject soldier;
 }

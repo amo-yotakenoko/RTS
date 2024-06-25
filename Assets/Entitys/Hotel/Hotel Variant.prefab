@@ -90,3 +90,4 @@ MonoBehaviour:
   maxHp: 100
   hp: 100
   isCompletion: 0
+  soldier: {fileID: 8048253852471678936, guid: 6c5929f1373d844419a747a11ad12e37, type: 3}

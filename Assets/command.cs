@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 public class command : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -17,23 +18,32 @@ public class command : MonoBehaviour
     public List<Entity> selectingEntity = new List<Entity>();
     public Mesh selectingMarkMesh;
     public Material selectingMarkMaterial;//TODO:ここシェーダグラフとか使っていい感じにしよう
-    public GameObject piMenuprefab;
+    public GameObject commandMenuprefab;
     // Update is called once per frame
     void Update()
     {
         // selecting();
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (!EventSystem.current.IsPointerOverGameObject() && Physics.Raycast(ray, out hit))
             {
                 GameObject hited = hit.collider.gameObject;
 
                 Entity entity = hited.GetComponent<Entity>();
-                if (entity != null && entity.team == this.team) entitySelect(entity);
-                if (entity != null && entity.team != this.team) enemySelect(entity);
+                if (Input.GetMouseButtonDown(0))
+                {
+
+                    if (entity != null && entity.team == this.team) entitySelect(entity);
+                    if (entity != null && entity.team != this.team) enemySelect(entity);
+                }
+                else if (Input.GetMouseButtonDown(1))
+                {
+                    if (entity != null && entity.team == this.team) entityOption(entity);
+                }
+
 
                 //TASK:ここの判定雑
                 if (hited.name == "Terrain") groundSelect(hit.point);
@@ -47,11 +57,33 @@ public class command : MonoBehaviour
         }
         showSelecting();
     }
-    piMenu pimenu;
     void entitySelect(Entity entity)
     {
 
-        Destroy(pimenu);
+
+        if (!selectingEntity.Contains(entity))
+        {
+            if (!Input.GetKey(KeyCode.LeftShift)) selectingEntity.Clear();
+            selectingEntity.Add(entity);
+        }
+        else
+        {
+            selectingEntity.Remove(entity);
+        }
+
+
+        //リフレクションでいろいろhttps://qiita.com/gushwell/items/91436bd1871586f6e663
+        //メソッドを取得
+
+    }
+    commandMenu commandMenu;
+
+    void entityOption(Entity entity)
+    {
+
+        // Destroy(commandMenu);
+        if (commandMenu != null) commandMenu.destroy();
+
         if (!selectingEntity.Contains(entity))
         {
             if (!Input.GetKey(KeyCode.LeftShift)) selectingEntity.Clear();
@@ -64,22 +96,24 @@ public class command : MonoBehaviour
 
         foreach (Entity e in selectingEntity)
         {
-            var existTasks = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
-         .Where(x => x.Name.EndsWith("CMD"))
-         .Where(x => x.GetParameters().Length == 0);
-            pimenu = Instantiate(piMenuprefab, entity.transform.position + new Vector3(0, 20, 0), piMenuprefab.transform.rotation).GetComponent<piMenu>();
+            print($"{e.GetType()}");
+            var existTasks = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(x => x.Name.EndsWith("CMD"))
+                .Where(x => x.GetParameters().Length == 0);
+            commandMenu = Instantiate(commandMenuprefab, entity.transform.position + new Vector3(0, 20, 0), commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
             foreach (var existTask in existTasks)
             {
                 UnityAction action = () => e.setTask(existTask.Name, new object[] { });
-                pimenu.add(action, $"{existTask.Name}");
+                var button = commandMenu.add($"{existTask.Name}");
+                button.onClick.AddListener(action);
+                button.onClick.AddListener(() =>
+                {
+                    print($"実行{existTask.Name}");
+                });
             }
 
         }
-        //リフレクションでいろいろhttps://qiita.com/gushwell/items/91436bd1871586f6e663
-        //メソッドを取得
-
     }
-
 
     // public void TaskAdd(System.Reflection.MethodInfo task)
     // {
@@ -99,6 +133,7 @@ public class command : MonoBehaviour
 
             // e.targetpos = targetPosition;
         }
+        commandMenu?.destroy();
     }
     void enemySelect(Entity enemy)
     {
