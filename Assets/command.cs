@@ -94,24 +94,34 @@ public class command : MonoBehaviour
             selectingEntity.Remove(entity);
         }
 
+        commandMenu = Instantiate(commandMenuprefab, entity.transform.position + new Vector3(0, 20, 0), commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
+
+        List<string> allMethodNames = new List<string>();
         foreach (Entity e in selectingEntity)
         {
-            print($"{e.GetType()}");
-            var existTasks = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                .Where(x => x.Name.EndsWith("CMD"))
-                .Where(x => x.GetParameters().Length == 0);
-            commandMenu = Instantiate(commandMenuprefab, entity.transform.position + new Vector3(0, 20, 0), commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
-            foreach (var existTask in existTasks)
-            {
-                UnityAction action = () => e.setTask(existTask.Name, new object[] { });
-                var button = commandMenu.add($"{existTask.Name}");
-                button.onClick.AddListener(action);
-                button.onClick.AddListener(() =>
-                {
-                    print($"実行{existTask.Name}");
-                });
-            }
+            var methodNames = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                                         .Where(x => x.Name.EndsWith("CMD"))
+                                         .Where(x => x.GetParameters().Length == 0)
+                                         .Select(x => x.Name);
+            allMethodNames.AddRange(methodNames);
+        }
+        allMethodNames = allMethodNames.Distinct().ToList();
 
+        foreach (var taskName in allMethodNames)
+        {
+            var button = commandMenu.add($"{taskName}");
+            button.onClick.AddListener(() =>
+            {
+                print($"実行{taskName}");
+            });
+            foreach (Entity e in selectingEntity)
+            {
+
+
+                UnityAction action = () => e.setTask(taskName, new object[] { });
+                button.onClick.AddListener(action);
+
+            }
         }
     }
 

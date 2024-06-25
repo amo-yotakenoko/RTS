@@ -70,16 +70,21 @@ public class commandMenu : MonoBehaviour
         button.onClick.AddListener(destroy);
 
         itemlis.Add(item);
+        setItemPosition();
+        return button;
+
+    }
+
+    void setItemPosition()
+    {
         int j = 0;
         foreach (var i in itemlis)
         {
             float angle = (float)j / (float)itemlis.Count * 2 * Mathf.PI;
-            i.UIobject.transform.localPosition = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 50;
+            i.UIobject.transform.localPosition = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 100;
             j++;
 
         }
-
-        return button;
 
     }
     public void destroy()
