@@ -96,29 +96,57 @@ public class command : MonoBehaviour
 
         commandMenu = Instantiate(commandMenuprefab, entity.transform.position + new Vector3(0, 20, 0), commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
 
-        List<string> allMethodNames = new List<string>();
+        // List<string> allMethodNames = new List<string>();
+        // foreach (Entity e in selectingEntity)
+        // {
+        //     var methodNames = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+        //                                  .Where(x => x.Name.EndsWith("CMD"))
+        //                                  .Where(x => x.GetParameters().Length == 0)
+        //                                  .Select(x => x.Name);
+        //     allMethodNames.AddRange(methodNames);
+        // }
+        // allMethodNames = allMethodNames.Distinct().ToList();
+
+        List<(string name, int cost)> methods = new List<(string, int)>();
+
         foreach (Entity e in selectingEntity)
         {
-            var methodNames = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+            var methodInfos = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
                                          .Where(x => x.Name.EndsWith("CMD"))
-                                         .Where(x => x.GetParameters().Length == 0)
-                                         .Select(x => x.Name);
-            allMethodNames.AddRange(methodNames);
-        }
-        allMethodNames = allMethodNames.Distinct().ToList();
+                                         .Where(x => x.GetParameters().Length == 0);
 
-        foreach (var taskName in allMethodNames)
-        {
-            var button = commandMenu.add($"{taskName}");
-            button.onClick.AddListener(() =>
+            foreach (var methodInfo in methodInfos)
             {
-                print($"実行{taskName}");
-            });
+                int cost = 0;
+                var costAttribute = (CostAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(CostAttribute));
+                if (costAttribute != null) cost = costAttribute.Cost;
+
+
+                var existingMethod = methods.FirstOrDefault(m => m.name == methodInfo.Name);
+                if (existingMethod.name != null)
+                {
+                    methods.Remove(existingMethod);
+                    methods.Add((existingMethod.name, existingMethod.cost + cost));
+                }
+                else
+                {
+                    methods.Add((methodInfo.Name, cost));
+                }
+            }
+        }
+
+        foreach (var method in methods)
+        {
+            var button = commandMenu.add($"{method.name}", method.cost);
+            button.onClick.AddListener(() =>
+           {
+               print($"実行{method.name}");
+           });
             foreach (Entity e in selectingEntity)
             {
 
 
-                UnityAction action = () => e.setTask(taskName, new object[] { });
+                UnityAction action = () => e.setTask(method.name, new object[] { });
                 button.onClick.AddListener(action);
 
             }

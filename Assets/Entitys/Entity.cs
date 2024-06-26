@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 using UnityEngine.Events;
 using System.Linq;
 using System.Reflection;
 
 public class Entity : MonoBehaviour
 {
+
     public static readonly Color[] teamColors = new Color[]
    {
         Color.blue,
@@ -105,4 +106,16 @@ public class Entity : MonoBehaviour
         yield return null;
     }
 
+}
+
+
+[AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
+sealed class CostAttribute : Attribute
+{
+    public int Cost { get; }
+
+    public CostAttribute(int cost)
+    {
+        Cost = cost;
+    }
 }

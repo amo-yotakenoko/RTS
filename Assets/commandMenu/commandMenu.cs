@@ -60,12 +60,12 @@ public class commandMenu : MonoBehaviour
     }
 
     // アイテムを追加するメソッド
-    public Button add(string cmdid)
+    public Button add(string cmdid, int cost = 0)
     {
         Item item = new Item(cmdid);
 
         item.UIobject = GameObject.Instantiate(itemPrefab, this.transform);
-        item.UIobject.transform.Find("text").GetComponent<TextMeshProUGUI>().text = item.CMDid;
+        item.UIobject.transform.Find("text").GetComponent<TextMeshProUGUI>().text = $"{item.CMDid}/{cost}";
         var button = item.UIobject.GetComponent<Button>();
         button.onClick.AddListener(destroy);
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Hotel : Structure
 {
+    [Cost(10)]
     public IEnumerator SexForSoldierCMD()
     {
         print("sex!!!");
