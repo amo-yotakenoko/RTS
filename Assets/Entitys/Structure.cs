@@ -1,28 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
-
+using TMPro;
 public class Structure : Entity
 {
-    // Start is called before the first frame update
-    public bool isCompletion;//竣工したか
-    void Start()
+    public enum Status
     {
-        if (!isCompletion)
+
+        LocationChoseing,
+        InProgress,
+        Complete
+    }
+
+    // Start is called before the first frame update
+    // public bool isCompletion;//竣工したか
+    public Status status;
+    protected override void Start()
+    {
+        if (status != Status.Complete)
         {
             hp = 0;
-
         }
+        // ボタンに関数を設定
+
+        Button okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
+        Button cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
+
+        if (status == Status.LocationChoseing)
+        {
+            okButton.onClick.AddListener(ok);
+            cancelButton.onClick.AddListener(cancel);
+        }
+        else
+        {
+            Destroy(okButton.gameObject);
+            Destroy(cancelButton.gameObject);
+        }
+
         base.Start();
     }
-    void Update()
-    {
 
-        if (!isCompletion)
-        {
-            callBuilder();
-        }
+    public void ok()
+    {
+        print("ok");
+        status = Status.InProgress;
+        callBuilder();
+    }
+    public void cancel()
+    {
+        print("cancel");
+        Destroy(this.gameObject);
+    }
+    protected override void Update()
+    {
+        // print("建てられた");
+        // if (status != Status.Complete)
+        // {
+        //     callBuilder();
+        // }
         base.Update();
     }
 
@@ -50,7 +87,7 @@ public class Structure : Entity
         if (hp >= maxHp)
         {
             hp = maxHp;
-            isCompletion = true;
+            status = Status.Complete;
             //TODO:竣工した時のエフェクトとか
         }
     }

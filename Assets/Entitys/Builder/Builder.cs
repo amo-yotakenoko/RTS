@@ -28,7 +28,7 @@ public class Builder : Character
                 yield return new WaitForSeconds(1f);//クールタイム
                 navmesh.isStopped = false;
             }
-            if (target.isCompletion) break;
+            if (target.status == Structure.Status.Complete) break;
 
             yield return null;
 

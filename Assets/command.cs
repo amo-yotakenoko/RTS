@@ -38,15 +38,16 @@ public class command : MonoBehaviour
 
                     if (entity != null && entity.team == this.team) entitySelect(entity);
                     if (entity != null && entity.team != this.team) enemySelect(entity);
+                    if (hited.name == "Terrain") groundSelect(hit.point);
                 }
                 else if (Input.GetMouseButtonDown(1))
                 {
                     if (entity != null && entity.team == this.team) entityOption(entity);
+                    if (hited.name == "Terrain") groundOption(hit.point);
                 }
 
 
                 //TASK:ここの判定雑
-                if (hited.name == "Terrain") groundSelect(hit.point);
 
             }
 
@@ -77,6 +78,29 @@ public class command : MonoBehaviour
 
     }
     commandMenu commandMenu;
+    [SerializeField] private StructureDatas structureDatabase;
+    void groundOption(Vector3 position)
+    {
+        print("groundOption");
+        if (commandMenu != null) commandMenu.destroy();
+        commandMenu = Instantiate(commandMenuprefab, position, commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
+
+
+
+        foreach (StructureData structureData in structureDatabase.structures)
+        {
+
+            var button = commandMenu.add($" {structureData.name}", 30);
+            button.onClick.AddListener(() =>
+             {
+                 print($" {structureData.name}を建築");
+                 var instantiatedStructure = Instantiate(structureData.prefab, position, structureData.prefab.transform.rotation).GetComponent<Structure>();
+                 instantiatedStructure.status = Structure.Status.LocationChoseing;
+             });
+        }
+
+
+    }
 
     void entityOption(Entity entity)
     {
@@ -107,8 +131,8 @@ public class command : MonoBehaviour
         // }
         // allMethodNames = allMethodNames.Distinct().ToList();
 
+        //Methodの名前とCostを計算
         List<(string name, int cost)> methods = new List<(string, int)>();
-
         foreach (Entity e in selectingEntity)
         {
             var methodInfos = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
