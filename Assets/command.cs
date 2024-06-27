@@ -96,6 +96,7 @@ public class command : MonoBehaviour
                  print($" {structureData.name}を建築");
                  var instantiatedStructure = Instantiate(structureData.prefab, position, structureData.prefab.transform.rotation).GetComponent<Structure>();
                  instantiatedStructure.status = Structure.Status.LocationChoseing;
+                 instantiatedStructure.team = team;
              });
         }
 

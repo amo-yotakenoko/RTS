@@ -20,21 +20,25 @@ public class Builder : Character
         do
         {
             float r = 0.5f;
+            if (target == null)
+            {
+                print("建築が壊された");
+                break;
+            }
             navmesh.destination = target.transform.position;
             if (Physics.OverlapSphere(transform.position + transform.forward * r * 2, r).Select(x => x.gameObject).Contains(target.gameObject))
             {
                 navmesh.isStopped = true;
-                target.construction(5);
+                target.construction(15);
                 yield return new WaitForSeconds(1f);//クールタイム
                 navmesh.isStopped = false;
-            }
-            if (target.status == Structure.Status.Complete) break;
 
+            }
             yield return null;
 
 
 
-        } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
+        } while (target.status == Structure.Status.Constaracting);
         // Destroy(line);
     }
 

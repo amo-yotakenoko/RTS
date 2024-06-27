@@ -10,7 +10,7 @@ public class Structure : Entity
     {
 
         LocationChoseing,
-        InProgress,
+        Constaracting,
         Complete
     }
 
@@ -25,27 +25,30 @@ public class Structure : Entity
         }
         // ボタンに関数を設定
 
-        Button okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
-        Button cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
 
         if (status == Status.LocationChoseing)
         {
+            Button okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
+            Button cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
             okButton.onClick.AddListener(ok);
             cancelButton.onClick.AddListener(cancel);
         }
         else
         {
-            Destroy(okButton.gameObject);
-            Destroy(cancelButton.gameObject);
+            destroyPositionsetUI();
         }
 
         base.Start();
     }
-
+    void destroyPositionsetUI()
+    {
+        Destroy(transform.Find("UI/positionSet").gameObject);
+    }
     public void ok()
     {
         print("ok");
-        status = Status.InProgress;
+        status = Status.Constaracting;
+        destroyPositionsetUI();
         callBuilder();
     }
     public void cancel()
@@ -66,23 +69,24 @@ public class Structure : Entity
 
     void callBuilder() //Builderを呼ぶ関数
     {
-
+        print("Builder呼びたい");
         List<Builder> myTeamBuildes = GameObject.FindGameObjectsWithTag("entity")
         .Select(x => x.GetComponent<Builder>())
         .Where(x => x != null && x.team == team).ToList();
         foreach (var builder in myTeamBuildes)
         {
-            if (builder.Tasks.Count == 0)
-            {
-                print("Builder呼ぼう");
-                builder.setTask("buildStructureCMD", new object[] { this });
-            }
+            // if (builder.Tasks.Count == 0)
+            // {
+            print("Builder呼ぼう");
+            builder.setTask("buildStructureCMD", new object[] { this });
+            // }
         }
     }
 
 
     public void construction(int h)
     {
+        print(" construction");
         hp += h;
         if (hp >= maxHp)
         {

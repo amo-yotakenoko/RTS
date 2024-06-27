@@ -3315,6 +3315,7 @@ MonoBehaviour:
   selectingMarkMesh: {fileID: -1101733005453906574, guid: ddbc2ddc17f3f1c438e6fe770c1873af, type: 3}
   selectingMarkMaterial: {fileID: 2100000, guid: 7c9700f5780042c43a6b0f214116e2af, type: 2}
   commandMenuprefab: {fileID: 8389105552525937423, guid: e71137136d66a0d40bb07c32493119a4, type: 3}
+  structureDatabase: {fileID: 11400000, guid: 194511cf056c3a143b50f447f23e1dec, type: 2}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
