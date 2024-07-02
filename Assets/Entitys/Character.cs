@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
+// using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
 public class Character : Entity
@@ -24,7 +24,7 @@ public class Character : Entity
         line.startColor = Entity.teamColors[team];
         line.endColor = Entity.teamColors[team];
         line.startWidth = 0.5f;
-         line.endWidth = 0.00f;
+        line.endWidth = 0.00f;
     }
     protected override void Update()
     {

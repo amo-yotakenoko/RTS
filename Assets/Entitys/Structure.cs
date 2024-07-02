@@ -32,6 +32,7 @@ public class Structure : Entity
 
         if (status == Status.LocationChoseing)
         {
+            gameObject.tag = "Untagged";
             okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
             cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
             okButton.onClick.AddListener(ok);
@@ -59,6 +60,7 @@ public class Structure : Entity
         Destroy(drag);
         destroyPositionsetUI();
         callBuilder();
+        gameObject.tag = "entity";
 
     }
     public void cancel()
@@ -113,6 +115,7 @@ public class Structure : Entity
         {
             hp = maxHp;
             status = Status.Complete;
+
             //TODO:竣工した時のエフェクトとか
         }
     }
