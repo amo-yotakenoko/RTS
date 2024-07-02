@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using TMPro;
+using UnityEngine.AI;
 public class Structure : Entity
 {
     public enum Status
@@ -13,12 +14,15 @@ public class Structure : Entity
         Constaracting,
         Complete
     }
+    NavMeshObstacle navMeshObstacle;
 
     // Start is called before the first frame update
     // public bool isCompletion;//竣工したか
     public Status status;
+    drag drag;
     protected override void Start()
     {
+        navMeshObstacle = GetComponent<NavMeshObstacle>();
         if (status != Status.Complete)
         {
             hp = 0;
@@ -28,10 +32,13 @@ public class Structure : Entity
 
         if (status == Status.LocationChoseing)
         {
-            Button okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
-            Button cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
+            okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
+            cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
             okButton.onClick.AddListener(ok);
             cancelButton.onClick.AddListener(cancel);
+            navMeshObstacle.enabled = false;
+            if (drag == null) drag = this.gameObject.AddComponent<drag>();
+
         }
         else
         {
@@ -48,14 +55,19 @@ public class Structure : Entity
     {
         print("ok");
         status = Status.Constaracting;
+        navMeshObstacle.enabled = true;
+        Destroy(drag);
         destroyPositionsetUI();
         callBuilder();
+
     }
     public void cancel()
     {
         print("cancel");
         Destroy(this.gameObject);
     }
+    Button okButton;
+    Button cancelButton;
     protected override void Update()
     {
         // print("建てられた");
@@ -63,6 +75,15 @@ public class Structure : Entity
         // {
         //     callBuilder();
         // }
+        if (status == Status.LocationChoseing)
+        {
+
+
+            okButton.interactable = drag.isOverlapping() == 0;
+
+
+
+        }
         base.Update();
     }
 

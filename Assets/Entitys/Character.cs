@@ -23,6 +23,8 @@ public class Character : Entity
         line.material = new Material(Shader.Find("Sprites/Default"));
         line.startColor = Entity.teamColors[team];
         line.endColor = Entity.teamColors[team];
+        line.startWidth = 0.5f;
+         line.endWidth = 0.00f;
     }
     protected override void Update()
     {
