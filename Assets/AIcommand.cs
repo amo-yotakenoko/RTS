@@ -119,17 +119,17 @@ public class AIcommand : MonoBehaviour
                         }
 
                     }
-                    if (character.Tasks.Count() == 0)
+                    // if (character.Tasks.Count() == 0)
+                    // {
+
+                    var sortedAttackCandidate = attackCandidate.OrderBy(enemy => Vector3.Distance(transform.position, enemy.transform.position)).FirstOrDefault();
+                    if (sortedAttackCandidate != null)
                     {
 
-                        var sortedAttackCandidate = attackCandidate.OrderBy(enemy => Vector3.Distance(transform.position, enemy.transform.position)).FirstOrDefault();
-                        if (sortedAttackCandidate != null)
-                        {
-
-                            character.setTask("AttackToEntityCMD", new object[] { sortedAttackCandidate });
-                            return;//一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
-                        }
+                        character.setTask("AttackToEntityCMD", new object[] { sortedAttackCandidate });
+                        return;//一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
                     }
+                    // }
 
                 }
                 else

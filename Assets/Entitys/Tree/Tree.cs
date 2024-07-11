@@ -9,11 +9,12 @@ public class Tree : Entity
         GetComponent<Renderer>().material.color = Color.green;//仮対応
         base.Start();
     }
-    // protected override void killed()
-    // {
-    //     //TODO:お金を手に入れる処理
-    //     base.killed();
-    // }
+    protected override void killed(int attackedTeam = 0)
+    {
+        teamParameter.getteamParameter(attackedTeam).money += 5;
+
+        base.killed(attackedTeam);
+    }
     // public override void damage(int damage)
     // {
 

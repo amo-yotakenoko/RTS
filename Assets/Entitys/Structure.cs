@@ -61,7 +61,7 @@ public class Structure : Entity
         destroyPositionsetUI();
         callBuilder();
         gameObject.tag = "entity";
-
+        //TODO:けんせつのおかね
     }
     public void cancel()
     {
