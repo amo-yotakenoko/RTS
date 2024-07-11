@@ -84,19 +84,20 @@ public class command : MonoBehaviour
         print("groundOption");
         if (commandMenu != null) commandMenu.destroy();
         commandMenu = Instantiate(commandMenuprefab, position, commandMenuprefab.transform.rotation).GetComponent<commandMenu>();
-
+        commandMenu.team = team;
 
 
         foreach (StructureData structureData in structureDatabase.structures)
         {
 
-            var button = commandMenu.add($" {structureData.name}", 30);
+            var button = commandMenu.add($" {structureData.name}", cost: structureData.cost, isMoneyConsumption: false);
             button.onClick.AddListener(() =>
              {
                  print($" {structureData.name}を建築");
                  var instantiatedStructure = Instantiate(structureData.prefab, position, structureData.prefab.transform.rotation).GetComponent<Structure>();
                  instantiatedStructure.status = Structure.Status.LocationChoseing;
                  instantiatedStructure.team = team;
+                 instantiatedStructure.constractionCost = structureData.cost;
              });
         }
 

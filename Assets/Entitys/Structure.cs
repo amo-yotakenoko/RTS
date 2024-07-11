@@ -14,6 +14,7 @@ public class Structure : Entity
         Constaracting,
         Complete
     }
+    public int constractionCost;
     NavMeshObstacle navMeshObstacle;
 
     // Start is called before the first frame update
@@ -110,6 +111,13 @@ public class Structure : Entity
     public void construction(int h)
     {
         print(" construction");
+        float consumptionMoney = (float)h / (float)maxHp * (float)constractionCost;
+        if (consumptionMoney > teamParameter.getteamParameter(team).money)
+        {
+            print("お金がたりない");
+            return;
+        }
+        teamParameter.getteamParameter(team).money -= (int)consumptionMoney;
         hp += h;
         if (hp >= maxHp)
         {

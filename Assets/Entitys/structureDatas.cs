@@ -5,6 +5,7 @@ public class StructureData
 {
     public string name;
     public GameObject prefab;
+    public int cost;
 }
 
 [CreateAssetMenu(fileName = "StructureDatas", menuName = "Entitys/StructureDatas", order = 1)]

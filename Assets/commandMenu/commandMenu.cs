@@ -8,6 +8,7 @@ using System;
 using UnityEngine.Events;
 public class commandMenu : MonoBehaviour
 {
+    public int team;
     // Item クラスを定義
     public class Item
     {
@@ -21,6 +22,7 @@ public class commandMenu : MonoBehaviour
             executeEvent = new UnityEvent();
         }
         public UnityEvent executeEvent;
+        public int cost;
     }
 
     public GameObject itemPrefab;
@@ -37,6 +39,11 @@ public class commandMenu : MonoBehaviour
 
     void Update()
     {
+        foreach (var item in itemlis)
+        {
+            item.UIobject.GetComponent<Button>().interactable = teamParameter.getteamParameter(team).money >= item.cost;
+            // teamParameter.getteamParameter(team).money += 5;
+        }
         // int i = 0;
 
         // var selecting = itemlis.OrderBy(x => (Camera.main.ScreenToWorldPoint(Input.mousePosition) - x.UIobject.transform.position).magnitude).FirstOrDefault();
@@ -59,8 +66,8 @@ public class commandMenu : MonoBehaviour
         // }
     }
 
-    // アイテムを追加するメソッド
-    public Button add(string cmdid, int cost = 0)
+    // アイテムを追加するメソッド, isMoneyConsumption:自動でお金を消費する
+    public Button add(string cmdid, int cost = 0, bool isMoneyConsumption = true)
     {
         Item item = new Item(cmdid);
 
@@ -68,12 +75,14 @@ public class commandMenu : MonoBehaviour
         item.UIobject.transform.Find("text").GetComponent<TextMeshProUGUI>().text = $"{item.CMDid}/{cost}";
         var button = item.UIobject.GetComponent<Button>();
         button.onClick.AddListener(destroy);
-
+        if (isMoneyConsumption) button.onClick.AddListener(() => teamParameter.getteamParameter(team).money -= cost);
+        item.cost = cost;
         itemlis.Add(item);
         setItemPosition();
         return button;
 
     }
+
 
     void setItemPosition()
     {
