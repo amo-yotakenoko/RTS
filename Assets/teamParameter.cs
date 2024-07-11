@@ -11,7 +11,8 @@ public class teamParameter : MonoBehaviour
     }
 
     public int team;
-    public int money;
+    //建設にかかるお金をconstractionが呼ばれるごとにしたのでmoneyは少数値をとらせます、表示するときは整数値にしよう
+    public float money;
 
 
 

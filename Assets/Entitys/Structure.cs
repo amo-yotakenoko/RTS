@@ -117,7 +117,7 @@ public class Structure : Entity
             print("お金がたりない");
             return;
         }
-        teamParameter.getteamParameter(team).money -= (int)consumptionMoney;
+        teamParameter.getteamParameter(team).money -= consumptionMoney;
         hp += h;
         if (hp >= maxHp)
         {

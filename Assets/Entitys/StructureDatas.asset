@@ -15,5 +15,7 @@ MonoBehaviour:
   structures:
   - name: Structure
     prefab: {fileID: 4665471871931936156, guid: 9a04065bcf83be746bd72ff2f2b8597f, type: 3}
-  - name: Hotel
+    cost: 0
+  - name: hotel
     prefab: {fileID: 6298543351345757768, guid: 40bd16722caf3a6449f9cbb3d2361f7a, type: 3}
+    cost: 50
