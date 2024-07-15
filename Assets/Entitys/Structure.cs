@@ -110,6 +110,7 @@ public class Structure : Entity
 
     public void construction(int h)
     {
+        h = Mathf.Clamp(hp + h, 0, maxHp) - hp;
         print(" construction");
         float consumptionMoney = (float)h / (float)maxHp * (float)constractionCost;
         if (consumptionMoney > teamParameter.getteamParameter(team).money)
@@ -118,6 +119,8 @@ public class Structure : Entity
             return;
         }
         teamParameter.getteamParameter(team).money -= consumptionMoney;
+
+
         hp += h;
         if (hp >= maxHp)
         {
