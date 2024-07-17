@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+//平面上をドラッグアンドドロップする奴、structureの位置指定用だけど他にも使えそうなので別コンポーネントに分けた
 public class drag : MonoBehaviour
 {
     private Vector3 screenPoint;
@@ -20,6 +21,7 @@ public class drag : MonoBehaviour
         Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
         transform.position = cursorPosition;
     }
+
     public int isOverlapping()
     {
         Collider collider = GetComponent<Collider>();

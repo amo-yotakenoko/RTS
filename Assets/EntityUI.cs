@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Reflection;
 using System.ComponentModel;
+//Entityの右上に出てくるTaskのListとか、空腹状態とか作るんだったらここ
 public class EntityUI : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class EntityUI : MonoBehaviour
         hpBar.maxValue = entity.maxHp;
         hpBar.value = entity.hp;
     }
+    //TODO:ココもっといい感じにする
     void Tasktext()
     {
         string tasktext = "";

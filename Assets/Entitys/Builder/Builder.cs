@@ -5,12 +5,13 @@ using System.Linq;
 
 public class Builder : Character
 {
-    // Start is called before the first frame update
+
     protected override void Start()
     {
-        GetComponent<Renderer>().material.color = Color.blue;//仮対応
+        GetComponent<Renderer>().material.color = Color.blue;//見分けが付かないので仮対応で色付け
         base.Start();
     }
+    //建物に移動して建てる
     public IEnumerator buildStructureCMD(Structure target)
     {
 
@@ -23,7 +24,7 @@ public class Builder : Character
             if (target == null)
             {
                 print("建築が壊された");
-                break;
+                break;//do while文を抜ける
             }
             navmesh.destination = target.transform.position;
             if (Physics.OverlapSphere(transform.position + transform.forward * r * 2, r).Select(x => x.gameObject).Contains(target.gameObject))

@@ -7,12 +7,13 @@ using TMPro;
 using UnityEngine.AI;
 public class Structure : Entity
 {
+    //建物のステータス(列挙型)
     public enum Status
     {
 
-        LocationChoseing,
-        Constaracting,
-        Complete
+        LocationChoseing,//場所を選んでる
+        Constaracting,//建ててもらってる
+        Complete//建て終わった
     }
     public int constractionCost;
     NavMeshObstacle navMeshObstacle;
@@ -28,7 +29,6 @@ public class Structure : Entity
         {
             hp = 0;
         }
-        // ボタンに関数を設定
 
 
         if (status == Status.LocationChoseing)
@@ -36,6 +36,7 @@ public class Structure : Entity
             gameObject.tag = "Untagged";
             okButton = transform.Find("UI/positionSet/ok").GetComponent<Button>();
             cancelButton = transform.Find("UI/positionSet/cancel").GetComponent<Button>();
+            // ボタンに関数を設定
             okButton.onClick.AddListener(ok);
             cancelButton.onClick.AddListener(cancel);
             navMeshObstacle.enabled = false;
@@ -53,6 +54,7 @@ public class Structure : Entity
     {
         Destroy(transform.Find("UI/positionSet").gameObject);
     }
+    //okボタンが押されたときに実行される
     public void ok()
     {
         print("ok");
@@ -62,8 +64,9 @@ public class Structure : Entity
         destroyPositionsetUI();
         callBuilder();
         gameObject.tag = "entity";
-        //TODO:けんせつのおかね
+
     }
+    //cancelボタンが押されたときに実行される
     public void cancel()
     {
         print("cancel");
@@ -73,25 +76,17 @@ public class Structure : Entity
     Button cancelButton;
     protected override void Update()
     {
-        // print("建てられた");
-        // if (status != Status.Complete)
-        // {
-        //     callBuilder();
-        // }
+
         if (status == Status.LocationChoseing)
         {
-
-
+            // 他オブジェクトと被ってたらOKボタンを無効化
             okButton.interactable = drag.isOverlapping() == 0;
-
-
-
         }
         base.Update();
     }
 
 
-    void callBuilder() //Builderを呼ぶ関数
+    void callBuilder() //Builderを呼ぶ関数,TODO:あんま遠い奴呼んでもしょうがないので距離or人数とかにする?
     {
         print("Builder呼びたい");
         List<Builder> myTeamBuildes = GameObject.FindGameObjectsWithTag("entity")
@@ -108,10 +103,10 @@ public class Structure : Entity
     }
 
 
-    public void construction(int h)
+    public void construction(int h)//builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる
     {
         h = Mathf.Clamp(hp + h, 0, maxHp) - hp;
-        print(" construction");
+        print("construction");
         float consumptionMoney = (float)h / (float)maxHp * (float)constractionCost;
         if (consumptionMoney > teamParameter.getteamParameter(team).money)
         {
@@ -133,10 +128,4 @@ public class Structure : Entity
 
 
 
-
-    // // Update is called once per frame
-    // void Update()
-    // {
-
-    // }
 }

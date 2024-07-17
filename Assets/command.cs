@@ -7,6 +7,7 @@ using System.Reflection;
 using System;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+//プレイヤーがキャラクターに指示を出す奴、デカくなってきたのでわけてもいいかも
 public class command : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -47,8 +48,6 @@ public class command : MonoBehaviour
                 }
 
 
-                //TASK:ここの判定雑
-
             }
 
         }
@@ -58,6 +57,7 @@ public class command : MonoBehaviour
         }
         showSelecting();
     }
+
     void entitySelect(Entity entity)
     {
 
@@ -79,6 +79,7 @@ public class command : MonoBehaviour
     }
     commandMenu commandMenu;
     [SerializeField] private StructureDatas structureDatabase;
+    //建築のUIが出る
     void groundOption(Vector3 position)
     {
         print("groundOption");
@@ -137,6 +138,7 @@ public class command : MonoBehaviour
         List<(string name, int cost)> methods = new List<(string, int)>();
         foreach (Entity e in selectingEntity)
         {
+            //EntityにあるTaskのメソッドを取得、whereでいろいろ絞り込み
             var methodInfos = e.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
                                          .Where(x => x.Name.EndsWith("CMD"))
                                          .Where(x => x.GetParameters().Length == 0);
@@ -144,6 +146,7 @@ public class command : MonoBehaviour
             foreach (var methodInfo in methodInfos)
             {
                 int cost = 0;
+                //コストの属性を取得
                 var costAttribute = (CostAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(CostAttribute));
                 if (costAttribute != null) cost = costAttribute.Cost;
 
@@ -161,6 +164,7 @@ public class command : MonoBehaviour
             }
         }
 
+        //commandMenuをつくってそこにボタンを追加
         foreach (var method in methods)
         {
             var button = commandMenu.add($"{method.name}", method.cost);
@@ -171,10 +175,8 @@ public class command : MonoBehaviour
             foreach (Entity e in selectingEntity)
             {
 
-
                 UnityAction action = () => e.setTask(method.name, new object[] { });
                 button.onClick.AddListener(action);
-
             }
         }
     }
@@ -189,6 +191,7 @@ public class command : MonoBehaviour
 
     void groundSelect(Vector3 targetPosition)
     {
+        //選択してるEntityをそこに移動
         foreach (Entity e in selectingEntity)
         {
 
@@ -201,6 +204,7 @@ public class command : MonoBehaviour
     }
     void enemySelect(Entity enemy)
     {
+        //選択してるEntityがそこに攻撃
         foreach (Entity e in selectingEntity)
         {
             // print("moveToEntityCMD");
@@ -209,7 +213,7 @@ public class command : MonoBehaviour
         }
     }
 
-
+    //選択されてる奴を強調
     void showSelecting()
     {
         foreach (Entity e in selectingEntity)

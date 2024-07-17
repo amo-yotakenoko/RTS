@@ -28,6 +28,7 @@ public class Entity : MonoBehaviour
     public int maxHp;
     public int hp;
 
+    //ここに実行させたいTaskを追加する
     public List<IEnumerator> Tasks;
     protected virtual void Start()
     {
@@ -70,7 +71,7 @@ public class Entity : MonoBehaviour
     {
     }
 
-
+    //タスクを下から順番に実行する処理、TODO:優先度的なシステムを付けたい
     IEnumerator taskExecute()
     {
         while (true)
@@ -86,6 +87,7 @@ public class Entity : MonoBehaviour
         }
     }
 
+    //テスト用Task
     public IEnumerator Task1CMD()
     {
         Debug.Log("task1");
@@ -93,13 +95,14 @@ public class Entity : MonoBehaviour
         Debug.Log("task1end");
     }
 
-
+    //テスト用Task
     public IEnumerator Task2CMD()
     {
         Debug.Log("task2");
         yield return new WaitForSeconds(2);
 
     }
+    //オブジェクトの削除
     public IEnumerator DestroyCMD()
     {
         Destroy(this.gameObject);

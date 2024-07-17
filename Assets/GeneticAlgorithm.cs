@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
-
+//遺伝的アルゴリズム
 public class GeneticAlgorithm : MonoBehaviour
 {
     // Start is called before the first frame update

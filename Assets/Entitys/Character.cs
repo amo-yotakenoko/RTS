@@ -16,6 +16,8 @@ public class Character : Entity
         // ChangeColor(Entity.teamColors[team]);
         base.Start();
     }
+
+    //行先を示すためのLineRendererを更新
     void lineSet()
     {
         navmesh = GetComponent<NavMeshAgent>();
@@ -38,78 +40,43 @@ public class Character : Entity
     //lineの描画https://indie-du.com/entry/2016/05/21/080000
     public IEnumerator moveCMD(Vector3 targetpos)
     {
-        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
-        // NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
+        // destinationに行先の座標を入れるとそこに行ってくれる
         navmesh.destination = targetpos;
-        // NavMeshPath path = new NavMeshPath();
-
-
+        //到着するまで待つ、navmeshの更新をするためにdo while文で書いてます
         do
         {
-            // print(navmesh.pathPending + "," + navmesh.remainingDistance);
-
-            // print(path.corners.Length);
-
-            // navmesh.CalculatePath(targetpos, path);
-
-            // line.SetVertexCount(path.corners.Length);
-            // line.SetPositions(path.corners);
             yield return null;
-            // print(navmesh.pathStatus);
         } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
-        // Destroy(line);
-
     }
 
     public IEnumerator moveToEntityCMD(Entity target)
     {
-        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
-        NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
-        // NavMeshPath path = new NavMeshPath();
 
+        NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
+
+        //到着するまでターゲットを追尾、navmeshの更新をするためにdo while文で書いてます
         do
         {
             navmesh.destination = target.transform.position;
-
-
-            // navmesh.destination = target.transform.position;
-            // navmesh.CalculatePath(target.transform.position, path);
-
-            // // print(navmesh.pathPending + "," + navmesh.remainingDistance);
-
-            // Vector3[] corners = new Vector3[10];
-            // navmesh.CalculatePath(target.transform.position, path);
-            // int cornerCount = path.GetCornersNonAlloc(corners);
-            // line.SetVertexCount(cornerCount);
-            // line.SetPositions(corners);
-            // yield return new WaitForSeconds(1);
             yield return null;
 
         } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
-        // Destroy(line);
+
     }
 
     public IEnumerator AttackToEntityCMD(Entity target)
     {
-        // LineRenderer line = gameObject.AddComponent<LineRenderer>();
+
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
-
-
         do
         {
             navmesh.destination = target.transform.position;
 
-
-
-            // NavMeshPath path = new NavMeshPath();
-            // navmesh.CalculatePath(target.transform.position, path);
-            // line.SetVertexCount(path.corners.Length);
-            // line.SetPositions(path.corners);
-
-
+            //リーチ内に敵がいたらアタック
             Entity enemy = getWithInReachEntity();
             if (enemy != null)
             {
+                //アタック中は移動を停止
                 navmesh.isStopped = true;
                 enemy.damage(2, team);
                 yield return new WaitForSeconds(0.1f);//クールタイム
@@ -119,14 +86,14 @@ public class Character : Entity
             yield return null;
 
 
-        } while (target != null);
+        } while (target != null);//ターゲットが消滅するまで
         yield return null;
         // Destroy(line);
 
 
     }
 
-    public IEnumerator AttackCMD(Entity target)//AI用
+    public IEnumerator AttackCMD(Entity target)//AI用、リーチ内にいたら自動で攻撃
     {
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         Entity enemy = getWithInReachEntity();
@@ -139,8 +106,9 @@ public class Character : Entity
         }
     }
 
-    public Entity getWithInReachEntity(float r = 0.5f)//攻撃できるオブジェクトを返す
+    public Entity getWithInReachEntity(float r = 0.5f)//攻撃できる敵オブジェクトを返す、オーバーライトしたら攻撃範囲の広いキャラとか作れるかも?
     {
+        //自分の目の前の当たり判定をすべて取得
         Collider[] hitColliders = Physics.OverlapSphere(transform.position + transform.forward * r * 2, r);
         foreach (var hit in hitColliders)
         {

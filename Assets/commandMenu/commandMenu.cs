@@ -6,26 +6,28 @@ using System.Linq;
 using TMPro;
 using System;
 using UnityEngine.Events;
+//全方向に出てくるUI(パイメニューって言うらしい?)、Taskを指示するのに使ってる
 public class commandMenu : MonoBehaviour
 {
     public int team;
-    // Item クラスを定義
+    // UI要素用のクラス(ほぼ構造体)
     public class Item
     {
         public string CMDid;
         public GameObject UIobject;
 
-        // Item クラスのコンストラクタ
+        //コンストラクタ
         public Item(string _cmdid)
         {
             CMDid = _cmdid;
             executeEvent = new UnityEvent();
         }
-        public UnityEvent executeEvent;
-        public int cost;
+        public UnityEvent executeEvent;//押されたときに実行されるイベント
+        public int cost;//実行に必要なコスト
     }
 
     public GameObject itemPrefab;
+    //今のUIのリスト
     public List<Item> itemlis = new List<Item>();
 
     // Start は最初のフレーム更新前に呼び出されます
@@ -41,6 +43,7 @@ public class commandMenu : MonoBehaviour
     {
         foreach (var item in itemlis)
         {
+            //コストが足りないと無効化される
             item.UIobject.GetComponent<Button>().interactable = teamParameter.getteamParameter(team).money >= item.cost;
             // teamParameter.getteamParameter(team).money += 5;
         }
@@ -83,7 +86,7 @@ public class commandMenu : MonoBehaviour
 
     }
 
-
+    //良い感じに円形に配置する
     void setItemPosition()
     {
         int j = 0;

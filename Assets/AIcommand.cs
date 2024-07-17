@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 using System.IO;
+//敵AI用
 public class AIcommand : MonoBehaviour
 {
     public float sumAddDamage;

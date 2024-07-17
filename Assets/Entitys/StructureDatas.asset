@@ -18,4 +18,4 @@ MonoBehaviour:
     cost: 0
   - name: hotel
     prefab: {fileID: 6298543351345757768, guid: 40bd16722caf3a6449f9cbb3d2361f7a, type: 3}
-    cost: 50
+    cost: 30

@@ -1,5 +1,6 @@
 using UnityEngine;
-
+//建物の名前と値段を登録する
+//参考:https://www.urablog.xyz/entry/2017/03/28/235739
 [System.Serializable]
 public class StructureData
 {
