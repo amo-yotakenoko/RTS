@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
-using System.IO;
+
 //敵AI用
 public class AIcommand : MonoBehaviour
 {
@@ -14,19 +15,25 @@ public class AIcommand : MonoBehaviour
 
     public int countCharacters()
     {
-        return GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList().Count();
+        return GameObject
+            .FindGameObjectsWithTag("entity")
+            .Select(x => x.GetComponent<Character>())
+            .Where(x => x != null && x.team == team)
+            .ToList()
+            .Count();
     }
+
     [System.Serializable]
     public class Parameter
     {
-        public float attack;      // 攻撃する閾値
-        public float escape;      // 逃げる閾値
+        public float attack; // 攻撃する閾値
+        public float escape; // 逃げる閾値
 
-        public float scattering;//拡散
+        public float scattering; //拡散
 
         public float attackVector; // 攻撃ベクトル
         public float escapeVector; // 逃げるベクトル
-        public float backVector;   // バックベクトル
+        public float backVector; // バックベクトル
 
         public override string ToString()
         {
@@ -35,7 +42,6 @@ public class AIcommand : MonoBehaviour
 
         public void RandomizeParameters(float maxDelta = 1f)
         {
-
             switch (Random.Range(0, 6))
             {
                 case 0:
@@ -59,12 +65,12 @@ public class AIcommand : MonoBehaviour
             }
         }
     }
-    // Start is called before the first frame update
-    void Start()
-    {
 
-    }
+    // Start is called before the first frame update
+    void Start() { }
+
     public int team;
+
     // public float bravery;
     public Parameter parameter;
 
@@ -74,7 +80,6 @@ public class AIcommand : MonoBehaviour
         // return;
         if (Input.GetKey(KeyCode.Space))
         {
-
             for (int x = -20; x < 20; x += 2)
             {
                 for (int z = -20; z < 20; z += 2)
@@ -82,13 +87,14 @@ public class AIcommand : MonoBehaviour
                     Vector3 pos = new Vector3(x, 0, z);
 
                     var enemypower = getPower(pos, team);
-
-
-
                 }
             }
         }
-        List<Character> myTeamCharacters = GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Character>()).Where(x => x != null && x.team == team).ToList();
+        List<Character> myTeamCharacters = GameObject
+            .FindGameObjectsWithTag("entity")
+            .Select(x => x.GetComponent<Character>())
+            .Where(x => x != null && x.team == team)
+            .ToList();
         foreach (var character in myTeamCharacters)
         {
             if (character.Tasks.Count <= 0)
@@ -98,7 +104,8 @@ public class AIcommand : MonoBehaviour
                 (float power, Vector3 grad) enemypower = (0, new Vector3(0, 0, 0));
                 for (int i = 0; i < 5; i++)
                 {
-                    if (i == team) continue;
+                    if (i == team)
+                        continue;
                     var ep = getPower(new Vector3(pos.x, 0, pos.z), i);
                     enemypower.power += ep.power;
                     enemypower.grad += ep.grad;
@@ -107,9 +114,17 @@ public class AIcommand : MonoBehaviour
                 {
                     //攻め
                     var attackCandidate = new List<Entity>();
-                    foreach (var enemy in GameObject.FindGameObjectsWithTag("entity").Select(x => x.GetComponent<Entity>()).Where(x => x != null && x.team != team))
+                    foreach (
+                        var enemy in GameObject
+                            .FindGameObjectsWithTag("entity")
+                            .Select(x => x.GetComponent<Entity>())
+                            .Where(x => x != null && x.team != team)
+                    )
                     {
-                        var ep = getPower(new Vector3(enemy.transform.position.x, 0, enemy.transform.position.z), enemy.team);
+                        var ep = getPower(
+                            new Vector3(enemy.transform.position.x, 0, enemy.transform.position.z),
+                            enemy.team
+                        );
                         if (ep.power < power.power)
                         {
                             attackCandidate.Add(enemy);
@@ -118,20 +133,24 @@ public class AIcommand : MonoBehaviour
                         {
                             // destination += power.grad.normalized * 5;
                         }
-
                     }
                     // if (character.Tasks.Count() == 0)
                     // {
 
-                    var sortedAttackCandidate = attackCandidate.OrderBy(enemy => Vector3.Distance(transform.position, enemy.transform.position)).FirstOrDefault();
+                    var sortedAttackCandidate = attackCandidate
+                        .OrderBy(enemy =>
+                            Vector3.Distance(transform.position, enemy.transform.position)
+                        )
+                        .FirstOrDefault();
                     if (sortedAttackCandidate != null)
                     {
-
-                        character.setTask("AttackToEntityCMD", new object[] { sortedAttackCandidate });
-                        return;//一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
+                        character.setTask(
+                            "AttackToEntityCMD",
+                            new object[] { sortedAttackCandidate }
+                        );
+                        return; //一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
                     }
                     // }
-
                 }
                 else
                 {
@@ -139,9 +158,9 @@ public class AIcommand : MonoBehaviour
                     Vector3 destination = new Vector3(0, 0, 0);
                     destination -= enemypower.grad.normalized * parameter.escapeVector;
                     destination += power.grad.normalized * parameter.backVector;
-                    character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 10;
+                    character.GetComponent<NavMeshAgent>().destination =
+                        character.transform.position + destination.normalized * 1;
                 }
-
 
                 // Vector3 destination = new Vector3(0, 0, 0);
                 // foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
@@ -177,14 +196,10 @@ public class AIcommand : MonoBehaviour
                     character.setTask("AttackCMD", new object[] { null });
                 }
 
-
                 // character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
             }
         }
-
     }
-
-
 
     //勢力を取得する、英語だとforceの方があってたりする?
     public (float power, Vector3 grad) getPower(Vector3 pos, int team)
@@ -214,9 +229,9 @@ public class AIcommand : MonoBehaviour
         Debug.DrawRay(pos + new Vector3(0, power * 5, 0), grad / 20f, Entity.teamColors[team]);
         return (power, grad);
     }
+
     float sigmoid(float x)
     {
         return 1.0f / (1.0f + Mathf.Exp(0.5f * x));
-
     }
 }
