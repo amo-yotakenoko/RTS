@@ -3,6 +3,7 @@ using System.Collections.Generic;
 // using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
+
 public class Character : Entity
 {
     // Start is called before the first frame update
@@ -10,6 +11,7 @@ public class Character : Entity
 
     LineRenderer line;
     NavMeshAgent navmesh;
+
     protected override void Start()
     {
         lineSet();
@@ -28,6 +30,7 @@ public class Character : Entity
         line.startWidth = 0.5f;
         line.endWidth = 0.00f;
     }
+
     protected override void Update()
     {
         NavMeshPath path = new NavMeshPath();
@@ -36,6 +39,7 @@ public class Character : Entity
         line.SetVertexCount(path.corners.Length);
         line.SetPositions(path.corners);
     }
+
     // public Vector3 targetpos;
     //lineの描画https://indie-du.com/entry/2016/05/21/080000
     public IEnumerator moveCMD(Vector3 targetpos)
@@ -51,7 +55,6 @@ public class Character : Entity
 
     public IEnumerator moveToEntityCMD(Entity target)
     {
-
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
 
         //到着するまでターゲットを追尾、navmeshの更新をするためにdo while文で書いてます
@@ -59,14 +62,11 @@ public class Character : Entity
         {
             navmesh.destination = target.transform.position;
             yield return null;
-
         } while (navmesh.pathPending || navmesh.remainingDistance > 1f);
-
     }
 
-    public IEnumerator AttackToEntityCMD(Entity target)
+    public IEnumerator AttackToEntityCMD(Entity target, float distance = 100)
     {
-
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         do
         {
@@ -78,38 +78,40 @@ public class Character : Entity
             {
                 //アタック中は移動を停止
                 navmesh.isStopped = true;
-                enemy.damage(2, team);
-                yield return new WaitForSeconds(0.1f);//クールタイム
+                enemy.damage(2, this);
+                yield return new WaitForSeconds(0.1f); //クールタイム
                 navmesh.isStopped = false;
             }
 
             yield return null;
-
-
-        } while (target != null);//ターゲットが消滅するまで
+        } while (
+            target != null
+            && (this.transform.position - target.transform.position).magnitude < distance
+        ); //ターゲットが消滅するまで
         yield return null;
         // Destroy(line);
-
-
     }
 
-    public IEnumerator AttackCMD(Entity target)//AI用、リーチ内にいたら自動で攻撃
+    public IEnumerator AttackCMD(Entity target) //AI用、リーチ内にいたら自動で攻撃
     {
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         Entity enemy = getWithInReachEntity();
         if (enemy != null)
         {
             navmesh.isStopped = true;
-            enemy.damage(2, team);
-            yield return new WaitForSeconds(1f);//クールタイム
+            enemy.damage(2, this);
+            yield return new WaitForSeconds(1f); //クールタイム
             navmesh.isStopped = false;
         }
     }
 
-    public Entity getWithInReachEntity(float r = 0.5f)//攻撃できる敵オブジェクトを返す、オーバーライトしたら攻撃範囲の広いキャラとか作れるかも?
+    public Entity getWithInReachEntity(float r = 0.5f) //攻撃できる敵オブジェクトを返す、オーバーライトしたら攻撃範囲の広いキャラとか作れるかも?
     {
         //自分の目の前の当たり判定をすべて取得
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position + transform.forward * r * 2, r);
+        Collider[] hitColliders = Physics.OverlapSphere(
+            transform.position + transform.forward * r * 2,
+            r
+        );
         foreach (var hit in hitColliders)
         {
             Entity entity = hit.gameObject.GetComponent<Entity>();
@@ -119,5 +121,12 @@ public class Character : Entity
             }
         }
         return null;
+    }
+
+    public override void damage(int damage, Entity attacked = null)
+    {
+        print(setTask("AttackToEntityCMD", new object[] { attacked, 1 }));
+        // AttackToEntityCMD(attacked)
+        base.damage(damage, attacked);
     }
 }

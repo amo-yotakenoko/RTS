@@ -323,7 +323,7 @@ public class command : MonoBehaviour
         foreach (Entity e in selectingEntity)
         {
             // print("moveToEntityCMD");
-            print(e.setTask("AttackToEntityCMD", new object[] { enemy }));
+            print(e.setTask("AttackToEntityCMD", new object[] { enemy, 100 }));
         }
     }
 

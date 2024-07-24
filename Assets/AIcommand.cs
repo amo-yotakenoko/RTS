@@ -146,7 +146,7 @@ public class AIcommand : MonoBehaviour
                     {
                         character.setTask(
                             "AttackToEntityCMD",
-                            new object[] { sortedAttackCandidate }
+                            new object[] { sortedAttackCandidate, 100 }
                         );
                         return; //一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
                     }

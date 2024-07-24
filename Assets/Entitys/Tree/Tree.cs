@@ -6,14 +6,15 @@ public class Tree : Entity
 {
     protected override void Start()
     {
-        GetComponent<Renderer>().material.color = Color.green;//仮対応
+        GetComponent<Renderer>().material.color = Color.green; //仮対応
         base.Start();
     }
-    protected override void killed(int attackedTeam = 0)
-    {
-        teamParameter.getteamParameter(attackedTeam).money += 5;
 
-        base.killed(attackedTeam);
+    protected override void killed(Entity attacked = null)
+    {
+        teamParameter.getteamParameter(attacked.team).money += 5;
+
+        base.killed(attacked);
     }
     // public override void damage(int damage)
     // {

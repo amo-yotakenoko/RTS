@@ -48,18 +48,18 @@ public class Entity : MonoBehaviour
         StartCoroutine(taskExecute());
     }
 
-    public virtual void damage(int damage, int attackedTeam = 0)
+    public virtual void damage(int damage, Entity attacked = null)
     {
         hp -= damage;
         // print("damageを受けた");
         if (hp <= 0)
         {
-            killed(attackedTeam);
+            killed(attacked);
         }
     }
 
     //オーバーライトして消滅せず壊れるだけにしてもいい
-    protected virtual void killed(int attackedTeam = 0)
+    protected virtual void killed(Entity attacked = null)
     {
         Destroy(this.gameObject);
         // team = attackedTeam;
