@@ -70,6 +70,7 @@ public class Character : Entity
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         do
         {
+            if (target == null || (this.transform.position - target.transform.position).magnitude > distance) break;
             navmesh.destination = target.transform.position;
 
             //リーチ内に敵がいたらアタック
@@ -78,16 +79,12 @@ public class Character : Entity
             {
                 //アタック中は移動を停止
                 navmesh.isStopped = true;
-                enemy.damage(2, this);
-                yield return new WaitForSeconds(0.1f); //クールタイム
+                enemy.damage(1, this);
+                yield return new WaitForSeconds(0.2f); //クールタイム
                 navmesh.isStopped = false;
             }
-
             yield return null;
-        } while (
-            target != null
-            && (this.transform.position - target.transform.position).magnitude < distance
-        ); //ターゲットが消滅するまで
+        } while (target != null); //ターゲットが消滅するまで
         yield return null;
         // Destroy(line);
     }
@@ -125,8 +122,11 @@ public class Character : Entity
 
     public override void damage(int damage, Entity attacked = null)
     {
-        print(setTask("AttackToEntityCMD", new object[] { attacked, 1 }));
-        // AttackToEntityCMD(attacked)
+        //攻撃した北奴に反撃(優先度高)
+        if (attacked != null)
+            setTask("AttackToEntityCMD", new object[] { attacked, 5 }, priority: 10);
         base.damage(damage, attacked);
     }
+
+
 }

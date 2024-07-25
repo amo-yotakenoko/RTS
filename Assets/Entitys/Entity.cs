@@ -94,16 +94,19 @@ public class Entity : MonoBehaviour
         {
             if (Tasks.Count > 0)
             {
-                Tasks.OrderBy(x => x.priority);
+                Tasks = Tasks.OrderBy(x => -x.priority).ToList();
                 var task = Tasks[0];
-                // Coroutine cr = StartCoroutine(task.task);
-                while (true)
+                if (team == 1)
                 {
-                    // yield return null;
-                    yield return task.task;
-                    print("コルーチン" + task.task.Current);
+                    print(task.task);
                 }
-                Tasks.Remove(task);
+                // Coroutine cr = StartCoroutine(task.task);
+                bool isRunning = task.task.MoveNext();
+                // yield return null;
+                // yield return task.task;
+                // print("コルーチン" + task.task.Current);
+                yield return task.task.Current;
+                if (!isRunning) Tasks.Remove(task);
             }
             yield return null;
         }
@@ -113,16 +116,24 @@ public class Entity : MonoBehaviour
     public IEnumerator Task1CMD()
     {
         Debug.Log("task1");
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(10);
         Debug.Log("task1end");
     }
 
     //テスト用Task
     public IEnumerator Task2CMD()
     {
-        Debug.Log("task2");
-        yield return new WaitForSeconds(2);
+        for (int i = 0; i < 20; i++)
+        {
+            GetComponent<Renderer>().material.color = Color.black;
+            yield return new WaitForSeconds(0.5f);
+            GetComponent<Renderer>().material.color = Color.white;
+            yield return new WaitForSeconds(0.5f);
+
+        }
     }
+
+
 
     //オブジェクトの削除
     public IEnumerator DestroyCMD()
