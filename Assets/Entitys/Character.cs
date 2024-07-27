@@ -84,7 +84,9 @@ public class Character : Entity
                 navmesh.isStopped = false;
             }
             yield return null;
-        } while (target != null); //ターゲットが消滅するまで
+            if (target == null) break;
+            if (target.hp <= null) break;
+        } while (true); //ターゲットが消滅するまで
         yield return null;
         // Destroy(line);
     }
