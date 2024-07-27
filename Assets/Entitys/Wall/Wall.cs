@@ -16,6 +16,7 @@ public class Wall : Structure
     protected override void Update()
     {
         navMeshObstacle.enabled = !isBroken && status == Status.Complete;
+        // navMeshObstacle.enabled = false;
         blendShapeUpdate();
         base.Update();
     }

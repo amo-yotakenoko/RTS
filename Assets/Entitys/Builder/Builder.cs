@@ -31,8 +31,8 @@ public class Builder : Character
             {
                 print("建築");
                 navmesh.isStopped = true;
-                target.construction(15);
-                yield return new WaitForSeconds(1f);//クールタイム
+                target.construction(5);
+                yield return new WaitForSeconds(0.1f);//クールタイム
                 navmesh.isStopped = false;
 
             }

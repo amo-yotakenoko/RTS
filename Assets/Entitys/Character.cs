@@ -70,6 +70,8 @@ public class Character : Entity
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
         do
         {
+            if (target == null) break;
+            if (target.hp <= 0) break;
             if (target == null || (this.transform.position - target.transform.position).magnitude > distance) break;
             navmesh.destination = target.transform.position;
 
@@ -84,8 +86,6 @@ public class Character : Entity
                 navmesh.isStopped = false;
             }
             yield return null;
-            if (target == null) break;
-            if (target.hp <= null) break;
         } while (true); //ターゲットが消滅するまで
         yield return null;
         // Destroy(line);

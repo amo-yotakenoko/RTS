@@ -16,5 +16,14 @@ public class teamParameterUI : MonoBehaviour
     void Update()
     {
         text.text = teamParameter.getteamParameter(team).ToString();
+
+        for (int i = 1; i <= 9; i++)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha0 + i))
+            {
+                Time.timeScale = (float)i;
+                // return i;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -291,8 +292,10 @@ public class command : MonoBehaviour
             foreach (Entity e in selectingEntity)
             {
                 // print(e.setTask("Task1CMD", new object[] { }));
-                print(e.setTask("moveCMD", new object[] { targetPosition }));
 
+                e.Tasks.RemoveAll(x => $"{x.task}".Contains("moveCMD"));
+                print(e.setTask("moveCMD", new object[] { targetPosition }, priority: 50));
+                // print($"名前{e.Tasks.Select(x => x.task).FirstOrDefault()} ");
                 // e.targetpos = targetPosition;
             }
             commandMenu?.destroy();

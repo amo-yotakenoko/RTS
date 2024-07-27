@@ -80,9 +80,9 @@ public class AIcommand : MonoBehaviour
         // return;
         if (Input.GetKey(KeyCode.Space))
         {
-            for (int x = -20; x < 20; x += 2)
+            for (int x = -80; x < 80; x += 3)
             {
-                for (int z = -20; z < 20; z += 2)
+                for (int z = -80; z < 80; z += 3)
                 {
                     Vector3 pos = new Vector3(x, 0, z);
 
@@ -90,6 +90,7 @@ public class AIcommand : MonoBehaviour
                 }
             }
         }
+
         List<Character> myTeamCharacters = GameObject
             .FindGameObjectsWithTag("entity")
             .Select(x => x.GetComponent<Character>())
@@ -211,12 +212,12 @@ public class AIcommand : MonoBehaviour
         {
             Vector3 diff = entity.transform.position - pos;
             // if (diff.magnitude <= 0) continue;
-            float p = sigmoid(diff.magnitude) * entity.GetComponent<Entity>().hp;
+            float sig = sigmoid(diff.magnitude) * entity.GetComponent<Entity>().hp;
             if (entity.GetComponent<Entity>().team == team)
             {
-                power += p;
+                power += sig * entity.GetComponent<Entity>().hp;
 
-                grad += diff.normalized * p;
+                grad += diff.normalized * (1.0f - sig) * sig * entity.GetComponent<Entity>().hp;
             }
             // else
             // {
@@ -226,8 +227,8 @@ public class AIcommand : MonoBehaviour
         }
         // print(power);
 
-        Debug.DrawRay(pos, new Vector3(0, power * 5, 0), Entity.teamColors[team]);
-        Debug.DrawRay(pos + new Vector3(0, power * 5, 0), grad / 20f, Entity.teamColors[team]);
+        Debug.DrawRay(pos, new Vector3(0, power * 1, 0), Entity.teamColors[team]);
+        Debug.DrawRay(pos + new Vector3(0, power * 1, 0), grad.normalized * 5f, Entity.teamColors[team]);
         return (power, grad);
     }
 
