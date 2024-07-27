@@ -90,7 +90,7 @@ public class command : MonoBehaviour
         print("groundOption");
         if (commandMenu != null)
             commandMenu.destroy();
-        commandMenu = Instantiate(commandMenuprefab, position, commandMenuprefab.transform.rotation)
+        commandMenu = Instantiate(commandMenuprefab, position + new Vector3(0, 1, 0), commandMenuprefab.transform.rotation)
             .GetComponent<commandMenu>();
         commandMenu.team = team;
 
@@ -330,6 +330,7 @@ public class command : MonoBehaviour
     //選択されてる奴を強調
     void showSelecting()
     {
+        selectingEntity.RemoveAll(e => e == null);
         foreach (Entity e in selectingEntity)
         {
             var materix4x4 = Matrix4x4.TRS(

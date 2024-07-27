@@ -16,7 +16,7 @@ public class Structure : Entity
         Complete//建て終わった
     }
     public int constractionCost;
-    NavMeshObstacle navMeshObstacle;
+    protected internal NavMeshObstacle navMeshObstacle;
 
     // Start is called before the first frame update
     // public bool isCompletion;//竣工したか
@@ -55,10 +55,11 @@ public class Structure : Entity
         Destroy(transform.Find("UI/positionSet").gameObject);
     }
     //okボタンが押されたときに実行される
-    public void ok()
+    public virtual void ok()
     {
         print("ok");
         status = Status.Constaracting;
+        if (navMeshObstacle == null) navMeshObstacle = GetComponent<NavMeshObstacle>();
         navMeshObstacle.enabled = true;
         Destroy(drag);
         destroyPositionsetUI();
@@ -86,7 +87,7 @@ public class Structure : Entity
     }
 
 
-    void callBuilder() //Builderを呼ぶ関数,TODO:あんま遠い奴呼んでもしょうがないので距離or人数とかにする?
+    public void callBuilder() //Builderを呼ぶ関数,TODO:あんま遠い奴呼んでもしょうがないので距離or人数とかにする?
     {
         print("Builder呼びたい");
         List<Builder> myTeamBuildes = GameObject.FindGameObjectsWithTag("entity")
@@ -103,7 +104,7 @@ public class Structure : Entity
     }
 
 
-    public void construction(int h)//builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる
+    public virtual void construction(int h)//builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる
     {
         h = Mathf.Clamp(hp + h, 0, maxHp) - hp;
         print("construction");

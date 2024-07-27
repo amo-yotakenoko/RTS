@@ -5,8 +5,15 @@ using System.Linq;
 //平面上をドラッグアンドドロップする奴、structureの位置指定用だけど他にも使えそうなので別コンポーネントに分けた
 public class drag : MonoBehaviour
 {
-    private Vector3 screenPoint;
+    private Plane dragPlane;
     private Vector3 offset;
+    private Vector3 screenPoint;
+
+    void Start()
+    {
+        // Define a plane at y=0, facing up (normal vector pointing up)
+        dragPlane = new Plane(Vector3.up, Vector3.zero);
+    }
 
     void OnMouseDown()
     {
@@ -17,9 +24,14 @@ public class drag : MonoBehaviour
 
     void OnMouseDrag()
     {
-        Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-        Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
-        transform.position = cursorPosition;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float distance;
+        if (dragPlane.Raycast(ray, out distance))
+        {
+            Vector3 point = ray.GetPoint(distance);
+            point.y = 0; // Ensure the point is on the plane at y=0
+            transform.position = point + offset;
+        }
     }
 
     public int isOverlapping()

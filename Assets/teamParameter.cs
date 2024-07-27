@@ -18,7 +18,10 @@ public class teamParameter : MonoBehaviour
     //建設にかかるお金をconstractionが呼ばれるごとにしたのでmoneyは少数値をとらせます、表示するときは整数値に直す予定
     public float money;
 
-
+    public override string ToString()
+    {
+        return $"{team}:{money}";
+    }
 
     void Start()
     {

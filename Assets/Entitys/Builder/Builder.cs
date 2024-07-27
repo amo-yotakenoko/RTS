@@ -29,6 +29,7 @@ public class Builder : Character
             navmesh.destination = target.transform.position;
             if (Physics.OverlapSphere(transform.position + transform.forward * r * 2, r).Select(x => x.gameObject).Contains(target.gameObject))
             {
+                print("建築");
                 navmesh.isStopped = true;
                 target.construction(15);
                 yield return new WaitForSeconds(1f);//クールタイム

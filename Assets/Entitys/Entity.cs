@@ -96,10 +96,10 @@ public class Entity : MonoBehaviour
             {
                 Tasks = Tasks.OrderBy(x => -x.priority).ToList();
                 var task = Tasks[0];
-                if (team == 1)
-                {
-                    print(task.task);
-                }
+                // if (team == 1)
+                // {
+                //     print(task.task);
+                // }
                 // Coroutine cr = StartCoroutine(task.task);
                 bool isRunning = task.task.MoveNext();
                 // yield return null;
