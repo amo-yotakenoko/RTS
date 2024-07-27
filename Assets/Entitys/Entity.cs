@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -31,9 +32,20 @@ public class Entity : MonoBehaviour
     public class Task
     {
         public IEnumerator task;
-        public int priority;
-
-        public string ToString()
+        public float priority;
+        public Transform place;
+        public float priorityCalculate(Vector3 pos)
+        {
+            if (place == null)
+                return priority;
+            float distance = 1.0f / (pos - place.position).magnitude;
+            return priority + sigmoid(distance);
+        }
+        float sigmoid(float x)
+        {
+            return 1.0f / (1.0f + Mathf.Exp(-x));
+        }
+        public override string ToString()
         {
             return $"{task}:{priority}";
         }
@@ -66,7 +78,7 @@ public class Entity : MonoBehaviour
         // hp = maxHp;
     }
 
-    public bool setTask(string cmd, object[] arguments, int priority = 0)
+    public bool setTask(string cmd, object[] arguments, float priority = 0, Transform place = null)
     {
         MethodInfo existTask = this.GetType()
             .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
@@ -78,6 +90,7 @@ public class Entity : MonoBehaviour
         Task task = new Task();
         task.task = (IEnumerator)existTask.Invoke(this, arguments);
         task.priority = priority;
+        task.place = place;
         Tasks.Add(task);
 
         return true;
@@ -94,7 +107,7 @@ public class Entity : MonoBehaviour
         {
             if (Tasks.Count > 0)
             {
-                Tasks = Tasks.OrderBy(x => -x.priority).ToList();
+                Tasks = Tasks.OrderBy(x => -x.priorityCalculate(transform.position)).ToList();
                 var task = Tasks[0];
                 // if (team == 1)
                 // {

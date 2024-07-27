@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 using UnityEngine.AI;
+using UnityEditor.Experimental.GraphView;
 public class Structure : Entity
 {
     //建物のステータス(列挙型)
@@ -98,7 +99,7 @@ public class Structure : Entity
             // if (builder.Tasks.Count == 0)
             // {
             print("Builder呼ぼう");
-            builder.setTask("buildStructureCMD", new object[] { this });
+            builder.setTask("buildStructureCMD", new object[] { this }, place: transform);
             // }
         }
     }
