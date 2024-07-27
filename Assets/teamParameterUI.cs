@@ -12,8 +12,9 @@ public class teamParameterUI : MonoBehaviour
     }
 
     // Update is called once per frame
+    public int team;
     void Update()
     {
-        text.text = teamParameter.getteamParamater(0).ToString();
+        text.text = teamParameter.getteamParameter(team).ToString();
     }
 }

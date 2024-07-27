@@ -20,7 +20,7 @@ public class teamParameter : MonoBehaviour
 
     public override string ToString()
     {
-        return $"{team}:{money}";
+        return $"team{team}:{money}yen";
     }
 
     void Start()
