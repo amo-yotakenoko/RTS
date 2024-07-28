@@ -31,7 +31,7 @@ public class Wall : Structure
     {
         isBroken = true;
         status = Status.Constaracting;
-        callBuilder();
+        // callBuilder();
     }
     SkinnedMeshRenderer skinnedMeshRenderer;
     public override void construction(int h)
