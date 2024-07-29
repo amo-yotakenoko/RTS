@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Reflection;
-using System.ComponentModel;
+
 //Entityの右上に出てくるTaskのListとか、空腹状態とか作るんだったらここ
 public class EntityUI : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class EntityUI : MonoBehaviour
     public TextMeshProUGUI Tasks;
     public Transform Canvas;
     public Slider hpBar;
+
     void Start()
     {
         entity = GetComponent<Entity>();
@@ -27,17 +29,16 @@ public class EntityUI : MonoBehaviour
         hpBar.maxValue = entity.maxHp;
         hpBar.value = entity.hp;
     }
+
     //TODO:ココもっといい感じにする
     void Tasktext()
     {
         string tasktext = "";
         if (entity.Tasks.Count > 0)
         {
-
             foreach (var task in entity.Tasks)
             {
                 tasktext += task.ToString() + "\n";
-
             }
         }
         Tasks.text = tasktext;

@@ -24,7 +24,7 @@ public class characterAnimation : MonoBehaviour
             "Speed",
             (prevpos - transform.position).magnitude * Time.deltaTime * spead
         );
-        print((prevpos - transform.position).magnitude * Time.deltaTime * spead);
+        // print((prevpos - transform.position).magnitude * Time.deltaTime * spead);
         float d = Vector3.Cross((prevpos - transform.position), this.transform.forward).y * 90;
         animator.SetFloat("Direction", d);
         prevpos = transform.position;
