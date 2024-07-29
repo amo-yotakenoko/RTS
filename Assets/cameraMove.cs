@@ -11,10 +11,21 @@ public class cameraMove : MonoBehaviour
     void Update()
     {
         Vector3 movepos = new Vector3(0, 0, 0);
-        movepos += transform.right * Input.GetAxis("Horizontal");
-        movepos += transform.up * Input.GetAxis("Vertical");
+        movepos +=
+            transform.right
+            * Input.GetAxis("Horizontal")
+            / Vector3.Dot(transform.right, new Vector3(1, 0, 0));
+        movepos +=
+            transform.up
+            * Input.GetAxis("Vertical")
+            / Vector3.Dot(transform.up, new Vector3(0, 0, 1));
+
+        // movepos /= movepos.magnitude;
         movepos.y = 0;
-        movepos /= movepos.magnitude;
+        if (movepos != new Vector3(0, 0, 0))
+        {
+            movepos *= Time.deltaTime * 30;
+        }
 
         this.transform.position += movepos;
 
