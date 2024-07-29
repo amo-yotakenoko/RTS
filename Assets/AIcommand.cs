@@ -141,7 +141,8 @@ public class AIcommand : MonoBehaviour
                     var sortedAttackCandidate = attackCandidate
                         .OrderBy(enemy =>
                             Vector3.Distance(transform.position, enemy.transform.position)
-                        ).Where(enemy => !(enemy is Wall))
+                        )
+                        .Where(enemy => !(enemy is Wall))
                         .FirstOrDefault();
                     if (sortedAttackCandidate != null)
                     {
@@ -228,7 +229,11 @@ public class AIcommand : MonoBehaviour
         // print(power);
 
         Debug.DrawRay(pos, new Vector3(0, power * 1f, 0), Entity.teamColors[team]);
-        Debug.DrawRay(pos + new Vector3(0, power * 1f, 0), grad.normalized * 5f, Entity.teamColors[team]);
+        Debug.DrawRay(
+            pos + new Vector3(0, power * 1f, 0),
+            grad.normalized * 5f,
+            Entity.teamColors[team]
+        );
         return (power, grad);
     }
 

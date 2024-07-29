@@ -266,7 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spead: 10000
-  direction: 0
+  direction: 90
 --- !u!4 &9167888965443050896 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: adfac9f2bf3eb3843a0055d100f42eaf, type: 3}
