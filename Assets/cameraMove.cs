@@ -10,11 +10,14 @@ public class cameraMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position += new Vector3(
-            Input.GetAxis("Horizontal"),
-            0,
-            Input.GetAxis("Vertical")
-        );
+        Vector3 movepos = new Vector3(0, 0, 0);
+        movepos += transform.right * Input.GetAxis("Horizontal");
+        movepos += transform.up * Input.GetAxis("Vertical");
+        movepos.y = 0;
+        movepos /= movepos.magnitude;
+
+        this.transform.position += movepos;
+
         drag();
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
         if (scrollInput != 0f)
@@ -28,6 +31,7 @@ public class cameraMove : MonoBehaviour
 
     bool isDragging = false;
     Vector3 dragOrigin;
+
     void drag()
     {
         if (Input.GetMouseButtonDown(2))
