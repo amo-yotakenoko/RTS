@@ -34,7 +34,7 @@ public class terrain : MonoBehaviour
                 // heights[x, y] = perlinNoiseHeight(x, y);
                 // heights[x, y] = 0;
                 float noise = perlinNoiseHeight(x, y);
-                if (0 < noise)
+                // if (0 < noise)
                 {
                     Instantiate(treePrefab, new Vector3(x, 0, y), transform.rotation);
                 }
