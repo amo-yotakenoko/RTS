@@ -111,13 +111,14 @@ public class AIcommand : MonoBehaviour
                     enemypower.power += ep.power;
                     enemypower.grad += ep.grad;
                 }
+
                 if (power.power + parameter.attack > enemypower.power)
                 {
                     //攻め
                     var attackCandidate = new List<Entity>();
                     foreach (
-                        var enemy in GameObject
-                            .FindGameObjectsWithTag("entity")
+                        var enemy in GetComponent<hashSearch>()
+                            .searchEntity(pos, 20)
                             .Select(x => x.GetComponent<Entity>())
                             .Where(x => x != null && x.team != team)
                     )
@@ -209,16 +210,19 @@ public class AIcommand : MonoBehaviour
     {
         float power = 0;
         Vector3 grad = new Vector3(0, 0, 0);
-        foreach (var entity in GameObject.FindGameObjectsWithTag("entity"))
+        // GameObject.FindGameObjectsWithTag("entity")から変更
+        foreach (var entity in GetComponent<hashSearch>().searchEntity(pos, 10))
         {
-            Vector3 diff = entity.transform.position - pos;
-            // if (diff.magnitude <= 0) continue;
-            float sig = sigmoid(diff.magnitude) * entity.GetComponent<Entity>().hp;
-            if (entity.GetComponent<Entity>().team == team)
-            {
-                power += sig * entity.GetComponent<Entity>().hp;
+            Vector3 diff = entity.position - pos;
 
-                grad += diff.normalized * (1.0f - sig) * sig * entity.GetComponent<Entity>().hp;
+            // if (diff.magnitude <= 0) continue;
+            Entity EntityComponent = entity.GetComponent<Entity>();
+            float sig = sigmoid(diff.magnitude) * EntityComponent.hp;
+            if (EntityComponent.team == team)
+            {
+                power += sig * EntityComponent.hp * EntityComponent.team != 0 ? 1f : 0f;
+
+                grad += diff.normalized * (1.0f - sig) * sig * EntityComponent.hp;
             }
             // else
             // {
@@ -228,10 +232,10 @@ public class AIcommand : MonoBehaviour
         }
         // print(power);
 
-        Debug.DrawRay(pos, new Vector3(0, power * 1f, 0), Entity.teamColors[team]);
+        Debug.DrawRay(pos, new Vector3(0, power * 0.2f, 0), Entity.teamColors[team]);
         Debug.DrawRay(
-            pos + new Vector3(0, power * 1f, 0),
-            grad.normalized * 5f,
+            pos + new Vector3(0, power * 0.2f, 0),
+            grad.normalized * 3f,
             Entity.teamColors[team]
         );
         return (power, grad);
