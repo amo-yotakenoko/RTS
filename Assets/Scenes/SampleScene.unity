@@ -1422,7 +1422,7 @@ MonoBehaviour:
   freq: 0.05
   seed: 6.16
   treePrefab: {fileID: 6041814277628813856, guid: b90491338ff002a4c8dc25334f4edab9, type: 3}
-  bias: 0.7
+  bias: 0.6
 --- !u!1001 &320401201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3568,7 +3568,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9fa40ef42372d94f98688520cbb5a79, type: 3}
   m_Name: 
@@ -3589,7 +3589,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9fa40ef42372d94f98688520cbb5a79, type: 3}
   m_Name: 
@@ -3610,7 +3610,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9fa40ef42372d94f98688520cbb5a79, type: 3}
   m_Name: 
