@@ -96,6 +96,8 @@ public class hashSearch : MonoBehaviour
                 // print($"{hashpos.x},{hashpos.y}");
                 foreach (var candidate in hashTable[hashpos.x, hashpos.y])
                 {
+                    if (candidate == null)
+                        continue;
                     yield return candidate;
                     //     Debug.DrawLine(
                     //         search + new Vector3(0, 1, 0),

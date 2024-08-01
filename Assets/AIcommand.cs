@@ -213,6 +213,7 @@ public class AIcommand : MonoBehaviour
         // GameObject.FindGameObjectsWithTag("entity")から変更
         foreach (var entity in GetComponent<hashSearch>().searchEntity(pos, 10))
         {
+            
             Vector3 diff = entity.position - pos;
 
             // if (diff.magnitude <= 0) continue;
