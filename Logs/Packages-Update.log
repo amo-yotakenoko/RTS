@@ -48,3 +48,11 @@ Update Mode: updateDependencies
 
 The following packages were 更新済:
   com.unity.visualscripting をバージョン 1.9.1 から 1.9.4 へ
+
+=== Mon Sep 23 20:20:15 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were 更新済:
+  com.unity.collab-proxy をバージョン 2.3.1 から 2.4.4 へ
