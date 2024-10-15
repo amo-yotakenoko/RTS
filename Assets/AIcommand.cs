@@ -23,6 +23,8 @@ public class AIcommand : MonoBehaviour
             .Count();
     }
 
+    hashSearch hashSearch;
+
     [System.Serializable]
     public class Parameter
     {
@@ -67,7 +69,10 @@ public class AIcommand : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start() { }
+    void Start()
+    {
+        hashSearch = GetComponent<hashSearch>();
+    }
 
     public int team;
 
@@ -117,7 +122,7 @@ public class AIcommand : MonoBehaviour
                     //攻め
                     var attackCandidate = new List<Entity>();
                     foreach (
-                        var enemy in GetComponent<hashSearch>()
+                        var enemy in hashSearch
                             .searchEntity(pos, 20)
                             .Select(x => x.GetComponent<Entity>())
                             .Where(x => x != null && x.team != team)
@@ -211,9 +216,8 @@ public class AIcommand : MonoBehaviour
         float power = 0;
         Vector3 grad = new Vector3(0, 0, 0);
         // GameObject.FindGameObjectsWithTag("entity")から変更
-        foreach (var entity in GetComponent<hashSearch>().searchEntity(pos, 10))
+        foreach (var entity in hashSearch.searchEntity(pos, 10))
         {
-            
             Vector3 diff = entity.position - pos;
 
             // if (diff.magnitude <= 0) continue;

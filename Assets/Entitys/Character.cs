@@ -68,13 +68,26 @@ public class Character : Entity
     public IEnumerator AttackToEntityCMD(Entity target, float distance = 100)
     {
         NavMeshAgent navmesh = GetComponent<NavMeshAgent>();
+        float stoppedTime = 0;
+
         do
         {
-            if (target == null) break;
-            if (target.hp <= 0) break;
-            if (target == null || (this.transform.position - target.transform.position).magnitude > distance) break;
+            if (target == null)
+                break;
+            if (target.hp <= 0)
+                break;
+            if (
+                target == null
+                || (this.transform.position - target.transform.position).magnitude > distance
+            )
+                break;
             navmesh.destination = target.transform.position;
-
+            if (navmesh.velocity.magnitude < 0.1f)
+            {
+                stoppedTime += Time.deltaTime;
+                if (stoppedTime > 5)
+                    break;
+            }
             //リーチ内に敵がいたらアタック
             Entity enemy = getWithInReachEntity();
             if (enemy != null)
@@ -87,6 +100,7 @@ public class Character : Entity
             }
             yield return null;
         } while (true); //ターゲットが消滅するまで
+
         yield return null;
         // Destroy(line);
     }
@@ -129,6 +143,4 @@ public class Character : Entity
             setTask("AttackToEntityCMD", new object[] { attacked, 5 }, priority: 10);
         base.damage(damage, attacked);
     }
-
-
 }
