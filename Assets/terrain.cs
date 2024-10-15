@@ -26,15 +26,15 @@ public class terrain : MonoBehaviour
         var heights = new float[genTerrain.heightmapResolution, genTerrain.heightmapResolution];
 
         // テレイン平面をパーリンノイズによって隆起させる。
-        for (int x = -100; x < 100; x += 3)
+        for (int x = -75; x < 75; x += 3)
         {
-            for (int y = -100; y < 100; y += 3)
+            for (int y = -75; y < 75; y += 3)
             {
                 // Terrainの高さをセット
                 // heights[x, y] = perlinNoiseHeight(x, y);
                 // heights[x, y] = 0;
                 float noise = perlinNoiseHeight(x, y);
-                if (0 < noise)
+                if (Mathf.Abs(x) + Mathf.Abs(y) < 100 && 0 < noise)
                 {
                     Instantiate(treePrefab, new Vector3(x, 0, y), transform.rotation);
                 }
