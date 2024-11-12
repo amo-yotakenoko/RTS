@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEditor.Experimental.GraphView;
+// using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -34,6 +34,7 @@ public class Entity : MonoBehaviour
         public IEnumerator task;
         public float priority;
         public Transform place;
+
         public float priorityCalculate(Vector3 pos)
         {
             if (place == null)
@@ -41,10 +42,12 @@ public class Entity : MonoBehaviour
             float distance = 1.0f / (pos - place.position).magnitude;
             return priority + sigmoid(distance);
         }
+
         float sigmoid(float x)
         {
             return 1.0f / (1.0f + Mathf.Exp(-x));
         }
+
         public override string ToString()
         {
             return $"{task}:{priority}";
@@ -119,7 +122,8 @@ public class Entity : MonoBehaviour
                 // yield return task.task;
                 // print("コルーチン" + task.task.Current);
                 yield return task.task.Current;
-                if (!isRunning) Tasks.Remove(task);
+                if (!isRunning)
+                    Tasks.Remove(task);
             }
             yield return null;
         }
@@ -142,11 +146,8 @@ public class Entity : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             GetComponent<Renderer>().material.color = Color.white;
             yield return new WaitForSeconds(0.5f);
-
         }
     }
-
-
 
     //オブジェクトの削除
     public IEnumerator DestroyCMD()
