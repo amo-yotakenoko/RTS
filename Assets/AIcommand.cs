@@ -107,10 +107,12 @@ public class AIcommand : MonoBehaviour
                 .Select(x => x.GetComponent<Character>())
                 .Where(x => x != null && x.team == team)
                 .ToList();
+            int c = 0;
             foreach (var character in myTeamCharacters)
             {
                 if (character.Tasks.Count <= 0)
                 {
+                    c += 1;
                     Vector3 pos = character.transform.position;
                     var power = getPower(new Vector3(pos.x, 0, pos.z), team);
                     (float power, Vector3 grad) enemypower = (0, new Vector3(0, 0, 0));
@@ -179,7 +181,7 @@ public class AIcommand : MonoBehaviour
                         destination -= enemypower.grad.normalized * parameter.escapeVector;
                         destination += power.grad.normalized * parameter.backVector;
                         character.GetComponent<NavMeshAgent>().destination =
-                            character.transform.position + destination.normalized * 1;
+                            character.transform.position + destination.normalized * 5;
                     }
 
                     // Vector3 destination = new Vector3(0, 0, 0);
@@ -217,8 +219,11 @@ public class AIcommand : MonoBehaviour
                     }
 
                     // character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
+                    if (c % 2 == 1)
+                    {
+                        yield return null;
+                    }
                 }
-                yield return null;
             }
             yield return null;
         }
@@ -230,7 +235,7 @@ public class AIcommand : MonoBehaviour
         float power = 0;
         Vector3 grad = new Vector3(0, 0, 0);
         // GameObject.FindGameObjectsWithTag("entity")から変更
-        foreach (var entity in hashSearch.searchEntity(pos, 10))
+        foreach (var entity in hashSearch.searchEntity(pos, 50))
         {
             Vector3 diff = entity.position - pos;
 

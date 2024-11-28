@@ -10,10 +10,10 @@ public class stageSet : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(setCharacter(1, new Vector3(-75, 0, -75)));
-        StartCoroutine(setCharacter(2, new Vector3(75, 0, -75)));
-        StartCoroutine(setCharacter(3, new Vector3(-75, 0, 75)));
-        StartCoroutine(setCharacter(4, new Vector3(75, 0, 75)));
+        StartCoroutine(setCharacter(1, new Vector3(-1, 0, -1) * 40));
+        StartCoroutine(setCharacter(2, new Vector3(1, 0, -1) * 40));
+        StartCoroutine(setCharacter(3, new Vector3(-1, 0, 1) * 40));
+        StartCoroutine(setCharacter(4, new Vector3(1, 0, 1) * 40));
     }
 
     IEnumerator setCharacter(int team, Vector3 position)
