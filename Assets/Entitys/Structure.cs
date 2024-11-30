@@ -1,21 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using System.Linq;
 using TMPro;
+using UnityEngine;
 using UnityEngine.AI;
-using UnityEditor.Experimental.GraphView;
+using UnityEngine.UI;
+
+// using UnityEditor.Experimental.GraphView;
 public class Structure : Entity
 {
     //建物のステータス(列挙型)
     public enum Status
     {
-
-        LocationChoseing,//場所を選んでる
-        Constaracting,//建ててもらってる
-        Complete//建て終わった
+        LocationChoseing, //場所を選んでる
+        Constaracting, //建ててもらってる
+        Complete //建て終わった
     }
+
     public int constractionCost;
     protected internal NavMeshObstacle navMeshObstacle;
 
@@ -23,6 +24,7 @@ public class Structure : Entity
     // public bool isCompletion;//竣工したか
     public Status status;
     drag drag;
+
     protected override void Start()
     {
         navMeshObstacle = GetComponent<NavMeshObstacle>();
@@ -30,7 +32,6 @@ public class Structure : Entity
         {
             hp = 0;
         }
-
 
         if (status == Status.LocationChoseing)
         {
@@ -41,8 +42,8 @@ public class Structure : Entity
             okButton.onClick.AddListener(ok);
             cancelButton.onClick.AddListener(cancel);
             navMeshObstacle.enabled = false;
-            if (drag == null) drag = this.gameObject.AddComponent<drag>();
-
+            if (drag == null)
+                drag = this.gameObject.AddComponent<drag>();
         }
         else
         {
@@ -51,34 +52,38 @@ public class Structure : Entity
 
         base.Start();
     }
+
     void destroyPositionsetUI()
     {
         Destroy(transform.Find("UI/positionSet").gameObject);
     }
+
     //okボタンが押されたときに実行される
     public virtual void ok()
     {
         print("ok");
         status = Status.Constaracting;
-        if (navMeshObstacle == null) navMeshObstacle = GetComponent<NavMeshObstacle>();
+        if (navMeshObstacle == null)
+            navMeshObstacle = GetComponent<NavMeshObstacle>();
         navMeshObstacle.enabled = true;
         Destroy(drag);
         destroyPositionsetUI();
         callBuilder();
         gameObject.tag = "entity";
-
     }
+
     //cancelボタンが押されたときに実行される
     public void cancel()
     {
         print("cancel");
         Destroy(this.gameObject);
     }
+
     Button okButton;
     Button cancelButton;
+
     protected override void Update()
     {
-
         if (status == Status.LocationChoseing)
         {
             // 他オブジェクトと被ってたらOKボタンを無効化
@@ -87,13 +92,14 @@ public class Structure : Entity
         base.Update();
     }
 
-
     public void callBuilder() //Builderを呼ぶ関数,TODO:あんま遠い奴呼んでもしょうがないので距離or人数とかにする?
     {
         print("Builder呼びたい");
-        List<Builder> myTeamBuildes = GameObject.FindGameObjectsWithTag("entity")
-        .Select(x => x.GetComponent<Builder>())
-        .Where(x => x != null && x.team == team).ToList();
+        List<Builder> myTeamBuildes = GameObject
+            .FindGameObjectsWithTag("entity")
+            .Select(x => x.GetComponent<Builder>())
+            .Where(x => x != null && x.team == team)
+            .ToList();
         foreach (var builder in myTeamBuildes)
         {
             // if (builder.Tasks.Count == 0)
@@ -104,8 +110,7 @@ public class Structure : Entity
         }
     }
 
-
-    public virtual void construction(int h)//builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる
+    public virtual void construction(int h) //builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる
     {
         h = Mathf.Clamp(hp + h, 0, maxHp) - hp;
         print("construction");
@@ -117,7 +122,6 @@ public class Structure : Entity
         }
         teamParameter.getteamParameter(team).money -= consumptionMoney;
 
-
         hp += h;
         if (hp >= maxHp)
         {
@@ -127,7 +131,4 @@ public class Structure : Entity
             //TODO:竣工した時のエフェクトとか
         }
     }
-
-
-
 }

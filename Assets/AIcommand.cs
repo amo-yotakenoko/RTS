@@ -23,6 +23,8 @@ public class AIcommand : MonoBehaviour
             .Count();
     }
 
+    hashSearch hashSearch;
+
     [System.Serializable]
     public class Parameter
     {
@@ -67,7 +69,11 @@ public class AIcommand : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start() { }
+    void Start()
+    {
+        hashSearch = GetComponent<hashSearch>();
+        StartCoroutine(loop());
+    }
 
     public int team;
 
@@ -90,118 +96,136 @@ public class AIcommand : MonoBehaviour
                 }
             }
         }
+    }
 
-        List<Character> myTeamCharacters = GameObject
-            .FindGameObjectsWithTag("entity")
-            .Select(x => x.GetComponent<Character>())
-            .Where(x => x != null && x.team == team)
-            .ToList();
-        foreach (var character in myTeamCharacters)
+    IEnumerator loop()
+    {
+        while (true)
         {
-            if (character.Tasks.Count <= 0)
+            List<Character> myTeamCharacters = GameObject
+                .FindGameObjectsWithTag("entity")
+                .Select(x => x.GetComponent<Character>())
+                .Where(x => x != null && x.team == team)
+                .ToList();
+            int c = 0;
+            foreach (var character in myTeamCharacters)
             {
-                Vector3 pos = character.transform.position;
-                var power = getPower(new Vector3(pos.x, 0, pos.z), team);
-                (float power, Vector3 grad) enemypower = (0, new Vector3(0, 0, 0));
-                for (int i = 0; i < 5; i++)
+                if (character.Tasks.Count <= 0)
                 {
-                    if (i == team)
-                        continue;
-                    var ep = getPower(new Vector3(pos.x, 0, pos.z), i);
-                    enemypower.power += ep.power;
-                    enemypower.grad += ep.grad;
-                }
-
-                if (power.power + parameter.attack > enemypower.power)
-                {
-                    //攻め
-                    var attackCandidate = new List<Entity>();
-                    foreach (
-                        var enemy in GetComponent<hashSearch>()
-                            .searchEntity(pos, 20)
-                            .Select(x => x.GetComponent<Entity>())
-                            .Where(x => x != null && x.team != team)
-                    )
+                    c += 1;
+                    Vector3 pos = character.transform.position;
+                    var power = getPower(new Vector3(pos.x, 0, pos.z), team);
+                    (float power, Vector3 grad) enemypower = (0, new Vector3(0, 0, 0));
+                    for (int i = 0; i < 5; i++)
                     {
-                        var ep = getPower(
-                            new Vector3(enemy.transform.position.x, 0, enemy.transform.position.z),
-                            enemy.team
-                        );
-                        if (ep.power < power.power)
-                        {
-                            attackCandidate.Add(enemy);
-                        }
-                        else
-                        {
-                            // destination += power.grad.normalized * 5;
-                        }
+                        if (i == team)
+                            continue;
+                        var ep = getPower(new Vector3(pos.x, 0, pos.z), i);
+                        enemypower.power += ep.power;
+                        enemypower.grad += ep.grad;
                     }
-                    // if (character.Tasks.Count() == 0)
-                    // {
 
-                    var sortedAttackCandidate = attackCandidate
-                        .OrderBy(enemy =>
-                            Vector3.Distance(transform.position, enemy.transform.position)
+                    if (power.power + parameter.attack > enemypower.power)
+                    {
+                        //攻め
+                        var attackCandidate = new List<Entity>();
+                        foreach (
+                            var enemy in hashSearch
+                                .searchEntity(pos, 20)
+                                .Select(x => x.GetComponent<Entity>())
+                                .Where(x => x != null && x.team != team)
                         )
-                        .Where(enemy => !(enemy is Wall))
-                        .FirstOrDefault();
-                    if (sortedAttackCandidate != null)
-                    {
-                        character.setTask(
-                            "AttackToEntityCMD",
-                            new object[] { sortedAttackCandidate, 100 },
-                            place: sortedAttackCandidate.transform
-                        );
-                        return; //一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
+                        {
+                            var ep = getPower(
+                                new Vector3(
+                                    enemy.transform.position.x,
+                                    0,
+                                    enemy.transform.position.z
+                                ),
+                                enemy.team
+                            );
+                            if (ep.power < power.power)
+                            {
+                                attackCandidate.Add(enemy);
+                            }
+                            else
+                            {
+                                // destination += power.grad.normalized * 5;
+                            }
+                        }
+                        // if (character.Tasks.Count() == 0)
+                        // {
+
+                        var sortedAttackCandidate = attackCandidate
+                            .OrderBy(enemy =>
+                                Vector3.Distance(transform.position, enemy.transform.position)
+                            )
+                            .Where(enemy => !(enemy is Wall))
+                            .FirstOrDefault();
+                        if (sortedAttackCandidate != null)
+                        {
+                            character.setTask(
+                                "AttackToEntityCMD",
+                                new object[] { sortedAttackCandidate, 100 },
+                                place: sortedAttackCandidate.transform
+                            );
+                            // return; //一気に目標が変わって重くならない様に1フレームに1キャラだけ指示
+                            break;
+                        }
+                        // }
                     }
+                    else
+                    {
+                        //逃げ
+                        Vector3 destination = new Vector3(0, 0, 0);
+                        destination -= enemypower.grad.normalized * parameter.escapeVector;
+                        destination += power.grad.normalized * parameter.backVector;
+                        character.GetComponent<NavMeshAgent>().destination =
+                            character.transform.position + destination.normalized * 5;
+                    }
+
+                    // Vector3 destination = new Vector3(0, 0, 0);
+                    // foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
+                    // {
+                    //     Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
+                    //     destination += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
                     // }
+
+                    // if (power.power + parameter.attack > enemypower.power)
+                    // {
+                    //     destination += enemypower.grad.normalized * parameter.attackVector;
+                    //     // print("おっかけ");
+
+                    // }
+                    // else if (power.power + parameter.escape < enemypower.power)
+                    // {
+                    //     destination -= enemypower.grad.normalized * parameter.escapeVector;
+                    //     destination += power.grad.normalized * parameter.backVector;
+                    // }
+
+
+                    // else if (enemypower.power > 0)
+                    // {
+                    //     print("逃げ");
+                    //     destination += power.grad.normalized * 5;
+                    // }
+
+
+                    Entity attackEntity = character.getWithInReachEntity();
+                    if (attackEntity != null)
+                    {
+                        sumAddDamage += 1;
+                        character.setTask("AttackCMD", new object[] { null });
+                    }
+
+                    // character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
+                    if (c % 2 == 1)
+                    {
+                        yield return null;
+                    }
                 }
-                else
-                {
-                    //逃げ
-                    Vector3 destination = new Vector3(0, 0, 0);
-                    destination -= enemypower.grad.normalized * parameter.escapeVector;
-                    destination += power.grad.normalized * parameter.backVector;
-                    character.GetComponent<NavMeshAgent>().destination =
-                        character.transform.position + destination.normalized * 1;
-                }
-
-                // Vector3 destination = new Vector3(0, 0, 0);
-                // foreach (var otherMyTeamEntitys in myTeamCharacters.Where(x => x != character))
-                // {
-                //     Vector3 diff = character.transform.position - otherMyTeamEntitys.transform.position;
-                //     destination += diff.normalized * (1 / diff.magnitude) * parameter.scattering;
-                // }
-
-                // if (power.power + parameter.attack > enemypower.power)
-                // {
-                //     destination += enemypower.grad.normalized * parameter.attackVector;
-                //     // print("おっかけ");
-
-                // }
-                // else if (power.power + parameter.escape < enemypower.power)
-                // {
-                //     destination -= enemypower.grad.normalized * parameter.escapeVector;
-                //     destination += power.grad.normalized * parameter.backVector;
-                // }
-
-
-                // else if (enemypower.power > 0)
-                // {
-                //     print("逃げ");
-                //     destination += power.grad.normalized * 5;
-                // }
-
-
-                Entity attackEntity = character.getWithInReachEntity();
-                if (attackEntity != null)
-                {
-                    sumAddDamage += 1;
-                    character.setTask("AttackCMD", new object[] { null });
-                }
-
-                // character.GetComponent<NavMeshAgent>().destination = character.transform.position + destination.normalized * 2;
             }
+            yield return null;
         }
     }
 
@@ -211,15 +235,14 @@ public class AIcommand : MonoBehaviour
         float power = 0;
         Vector3 grad = new Vector3(0, 0, 0);
         // GameObject.FindGameObjectsWithTag("entity")から変更
-        foreach (var entity in GetComponent<hashSearch>().searchEntity(pos, 10))
+        foreach (var entity in hashSearch.searchEntity(pos, 50))
         {
-            
             Vector3 diff = entity.position - pos;
 
             // if (diff.magnitude <= 0) continue;
             Entity EntityComponent = entity.GetComponent<Entity>();
             float sig = sigmoid(diff.magnitude) * EntityComponent.hp;
-            if (EntityComponent.team == team)
+            if (EntityComponent.team == team && team != 0)
             {
                 power += sig * EntityComponent.hp * EntityComponent.team != 0 ? 1f : 0f;
 

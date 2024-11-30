@@ -56,3 +56,12 @@ Update Mode: updateDependencies
 
 The following packages were 更新済:
   com.unity.collab-proxy をバージョン 2.3.1 から 2.4.4 へ
+
+=== Tue Sep 24 11:26:52 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were 更新済:
+  com.unity.collab-proxy をバージョン 2.4.4 から 2.5.1 へ
+  com.unity.textmeshpro をバージョン 3.0.6 から 3.0.7 へ
