@@ -181,7 +181,7 @@ public class AIcommand : MonoBehaviour
                         destination -= enemypower.grad.normalized * parameter.escapeVector;
                         destination += power.grad.normalized * parameter.backVector;
                         character.GetComponent<NavMeshAgent>().destination =
-                            character.transform.position + destination.normalized * 5;
+                            character.transform.position + destination.normalized * 10;
                     }
 
                     // Vector3 destination = new Vector3(0, 0, 0);

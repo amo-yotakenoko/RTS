@@ -7,6 +7,7 @@ public class stageSet : MonoBehaviour
     // Start is called before the first frame update
     public GameObject character;
     public GameObject builder;
+    public GameObject baseStructure;
 
     void Start()
     {
@@ -33,6 +34,10 @@ public class stageSet : MonoBehaviour
 
             yield return null;
         }
+
+        var baseInstance = Instantiate(baseStructure);
+        baseInstance.GetComponent<Entity>().team = team;
+        baseInstance.transform.position = position;
     }
 
     // Update is called once per frame
