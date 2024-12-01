@@ -64,8 +64,36 @@ PrefabInstance:
       propertyPath: status
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7934627165899279455, guid: 9a04065bcf83be746bd72ff2f2b8597f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4665471871931936156, guid: 9a04065bcf83be746bd72ff2f2b8597f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6938797203083645590}
   m_SourcePrefab: {fileID: 100100000, guid: 9a04065bcf83be746bd72ff2f2b8597f, type: 3}
+--- !u!1 &3644897013412238195 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4665471871931936156, guid: 9a04065bcf83be746bd72ff2f2b8597f, type: 3}
+  m_PrefabInstance: {fileID: 8226479441174724335}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6938797203083645590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3644897013412238195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 907af17b611bfbd4b9ae5663e9869158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  maxHp: 100
+  hp: 100
+  constractionCost: 0
+  status: 2
+  soldier: {fileID: 8048253852471678936, guid: 6c5929f1373d844419a747a11ad12e37, type: 3}
+  builder: {fileID: 8447115695516711014, guid: 1efac3e571f445245bce3345a08bc701, type: 3}
