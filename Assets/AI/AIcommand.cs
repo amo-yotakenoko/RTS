@@ -73,7 +73,7 @@ public class AIcommand : MonoBehaviour
     {
         hashSearch = GetComponent<hashSearch>();
         StartCoroutine(loop());
-        gameObject.AddComponent<meanShift>().team = team;
+        // gameObject.AddComponent<meanShift>().team = team;
     }
 
     public int team;
@@ -132,7 +132,7 @@ public class AIcommand : MonoBehaviour
                         var attackCandidate = new List<Entity>();
                         foreach (
                             var enemy in hashSearch
-                                .searchEntity(pos, 50)
+                                .searchEntity(pos, 20)
                                 .Select(x => x.GetComponent<Entity>())
                                 .Where(x => x != null && x.team != team)
                         )

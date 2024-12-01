@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 
-public class meanShift : MonoBehaviour
+public class Clustering : MonoBehaviour
 {
     // Start is called before the first frame update
     public Mesh mesh;
