@@ -3,7 +3,7 @@ using System.Collections.Generic;
 // using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
-
+using System;
 public class Character : Entity
 {
     // Start is called before the first frame update
@@ -120,20 +120,30 @@ public class Character : Entity
 
     public Entity getWithInReachEntity(float r = 0.5f) //攻撃できる敵オブジェクトを返す、オーバーライトしたら攻撃範囲の広いキャラとか作れるかも?
     {
-        //自分の目の前の当たり判定をすべて取得
-        Collider[] hitColliders = Physics.OverlapSphere(
-            transform.position + transform.forward * r * 2,
-            r
-        );
-        foreach (var hit in hitColliders)
+
+        try
         {
-            Entity entity = hit.gameObject.GetComponent<Entity>();
-            if (entity != null && entity.team != this.team)
+
+            //自分の目の前の当たり判定をすべて取得
+            Collider[] hitColliders = Physics.OverlapSphere(
+                transform.position + transform.forward * r * 2,
+                r
+            );
+            foreach (var hit in hitColliders)
             {
-                return entity;
+                Entity entity = hit.gameObject.GetComponent<Entity>();
+                if (entity != null && entity.team != this.team)
+                {
+                    return entity;
+                }
             }
         }
+        catch (Exception e)
+        {
+
+        }
         return null;
+
     }
 
     public override void damage(int damage, Entity attacked = null)

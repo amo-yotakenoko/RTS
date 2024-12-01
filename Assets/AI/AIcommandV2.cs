@@ -46,13 +46,26 @@ public class AIcommandV2 : MonoBehaviour
 
                     if (group.entitys.Count() > othergroup.entitys.Count())
                     {
+                        //勝てるので突進
                         destination = othergroup.center - group.center;
                         break;
                     }
                     else
                     {
+                        // Ally:味方
+                        var nearAllyGroup = clustaring.groups
+                                   .Where(g => g != group) // 自分自身を除外
+                                   .OrderBy(g => Vector3.Distance(group.center, g.center)) // 距離でソート
+                                   .FirstOrDefault(); // 最も近いグループを取得
 
-                        destination = -(othergroup.center - group.center);
+                        if (nearAllyGroup != null)
+                        {
+                            destination = (nearAllyGroup.center - group.center);
+                            break;
+
+                        }
+
+
                     }
 
                 }
@@ -61,7 +74,22 @@ public class AIcommandV2 : MonoBehaviour
 
                 foreach (var entity in group.entitys)
                 {
+
+
+                    if (entity is Character character)
+                    {
+                        // `entity` が `Character` 型の場合に処理を続行
+                        Entity attackEntity = character.getWithInReachEntity();
+
+                        if (attackEntity != null)
+                        {
+
+                            entity.setTask("AttackCMD", new object[] { null });
+                        }
+                    }
+
                     if (entity.Tasks.Count() > 0) continue;
+
 
                     NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
                     if (agent != null)
