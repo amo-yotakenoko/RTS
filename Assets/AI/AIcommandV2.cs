@@ -7,10 +7,12 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
+
 public class AIcommandV2 : MonoBehaviour
 {
     hashSearch hashSearch;
     public Clustering clustaring;
+
     // hashSearch hashSearch;
     void Start()
     {
@@ -19,32 +21,26 @@ public class AIcommandV2 : MonoBehaviour
         clustaring = gameObject.AddComponent<Clustering>();
         clustaring.team = team;
     }
+
     public int team;
+
     // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    void Update() { }
 
     IEnumerator loop()
     {
         yield return new WaitForSeconds(2f);
         while (true)
         {
-
             foreach (var group in clustaring.groups)
             {
-
-
-                var sortedGroups = GetOtherGroups().OrderBy(x => Vector3.Distance(group.center, x.center));
-
+                var sortedGroups = GetOtherGroups()
+                    .OrderBy(x => Vector3.Distance(group.center, x.center));
 
                 Vector3 destination = new Vector3(0, 0, 0);
                 foreach (var othergroup in sortedGroups)
                 {
-
-                    if (group.entitys.Count() > othergroup.entitys.Count())
+                    if (group.entitys.Count() >= othergroup.entitys.Count())
                     {
                         //勝てるので突進
                         destination = othergroup.center - group.center;
@@ -53,29 +49,21 @@ public class AIcommandV2 : MonoBehaviour
                     else
                     {
                         // Ally:味方
-                        var nearAllyGroup = clustaring.groups
-                                   .Where(g => g != group) // 自分自身を除外
-                                   .OrderBy(g => Vector3.Distance(group.center, g.center)) // 距離でソート
-                                   .FirstOrDefault(); // 最も近いグループを取得
+                        var nearAllyGroup = clustaring
+                            .groups.Where(g => g != group) // 自分自身を除外
+                            .OrderBy(g => Vector3.Distance(group.center, g.center)) // 距離でソート
+                            .FirstOrDefault(); // 最も近いグループを取得
 
                         if (nearAllyGroup != null)
                         {
                             destination = (nearAllyGroup.center - group.center);
                             break;
-
                         }
-
-
                     }
-
                 }
-
-
 
                 foreach (var entity in group.entitys)
                 {
-
-
                     if (entity is Character character)
                     {
                         // `entity` が `Character` 型の場合に処理を続行
@@ -83,32 +71,25 @@ public class AIcommandV2 : MonoBehaviour
 
                         if (attackEntity != null)
                         {
-
                             entity.setTask("AttackCMD", new object[] { null });
                         }
                     }
 
-                    if (entity.Tasks.Count() > 0) continue;
-
+                    if (entity.Tasks.Count() > 0)
+                        continue;
 
                     NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
                     if (agent != null)
                     {
-
                         entity.GetComponent<NavMeshAgent>().destination =
-                     entity.transform.position + destination;
+                            entity.transform.position + destination;
                     }
                 }
-
-
             }
-
 
             yield return null;
         }
     }
-
-
 
     public List<Clustering.Group> GetOtherGroups()
     {
@@ -128,5 +109,4 @@ public class AIcommandV2 : MonoBehaviour
 
         return allGroups;
     }
-
 }
