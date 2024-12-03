@@ -40,7 +40,7 @@ public class AIcommandV2 : MonoBehaviour
                 Vector3 destination = new Vector3(0, 0, 0);
                 foreach (var othergroup in sortedGroups)
                 {
-                    if (group.entitys.Count() >= othergroup.entitys.Count())
+                    if (group.entitys.Count() + 2 >= othergroup.entitys.Count())
                     {
                         //勝てるので突進
                         destination = othergroup.center - group.center;
@@ -86,7 +86,6 @@ public class AIcommandV2 : MonoBehaviour
                     }
                 }
             }
-
             yield return null;
         }
     }

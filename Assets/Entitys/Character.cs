@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 // using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
-using System;
+
 public class Character : Entity
 {
     // Start is called before the first frame update
@@ -94,7 +95,7 @@ public class Character : Entity
             {
                 //アタック中は移動を停止
                 navmesh.isStopped = true;
-                enemy.damage(1, this);
+                enemy.damage(5, this);
                 yield return new WaitForSeconds(0.2f); //クールタイム
                 navmesh.isStopped = false;
             }
@@ -112,7 +113,7 @@ public class Character : Entity
         if (enemy != null)
         {
             navmesh.isStopped = true;
-            enemy.damage(2, this);
+            enemy.damage(5, this);
             yield return new WaitForSeconds(1f); //クールタイム
             navmesh.isStopped = false;
         }
@@ -120,10 +121,8 @@ public class Character : Entity
 
     public Entity getWithInReachEntity(float r = 0.5f) //攻撃できる敵オブジェクトを返す、オーバーライトしたら攻撃範囲の広いキャラとか作れるかも?
     {
-
         try
         {
-
             //自分の目の前の当たり判定をすべて取得
             Collider[] hitColliders = Physics.OverlapSphere(
                 transform.position + transform.forward * r * 2,
@@ -138,12 +137,8 @@ public class Character : Entity
                 }
             }
         }
-        catch (Exception e)
-        {
-
-        }
+        catch (Exception e) { }
         return null;
-
     }
 
     public override void damage(int damage, Entity attacked = null)

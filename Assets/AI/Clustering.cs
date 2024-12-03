@@ -14,12 +14,14 @@ public class Clustering : MonoBehaviour
     public Mesh mesh;
     public Material material;
     hashSearch hashSearch;
+
     // public List<Vector3> positions = new List<Vector3>();
     void Start()
     {
         hashSearch = GetComponent<hashSearch>();
         StartCoroutine(loop());
     }
+
     public int team;
 
     // Update is called once per frame
@@ -31,35 +33,35 @@ public class Clustering : MonoBehaviour
             {
                 // print(group);
                 // Graphics.DrawMesh(mesh, group.center + new Vector3(0, 1, 0), Quaternion.identity, material, 0);
-                Debug.DrawRay(group.center, Vector3.up * 5f, new Color(Random.value, Random.value, Random.value));
+                Debug.DrawRay(
+                    group.center,
+                    Vector3.up * 5f,
+                    new Color(Random.value, Random.value, Random.value)
+                );
 
                 foreach (var entity in group.GetEntities())
                 {
-
-                    Debug.DrawLine(group.center + new Vector3(0, 1, 0), entity.transform.position + new Vector3(0, 1, 0), Entity.teamColors[team]);
-
+                    Debug.DrawLine(
+                        group.center + new Vector3(0, 1, 0),
+                        entity.transform.position + new Vector3(0, 1, 0),
+                        Entity.teamColors[team]
+                    );
                 }
             }
     }
 
-
     public class Group
     {
-
-
-
         public List<Entity> entitys { get; set; }
-
 
         public IEnumerable<Entity> GetEntities()
         {
             return entitys.Where(entity => entity != null && entity.gameObject != null);
         }
 
-
         public Vector3 center;
 
-        public float deviation;//標準偏差
+        public float deviation; //標準偏差
 
         public float calculateDeviation()
         {
@@ -72,17 +74,17 @@ public class Clustering : MonoBehaviour
             deviation = Mathf.Sqrt(deviation);
             return deviation;
         }
-
-
     }
+
     public List<Group> groups = new List<Group>();
 
     private IEnumerator loop()
     {
         yield return new WaitForSeconds(1f);
         var myTeamCharacters = GameObject
-                       .FindGameObjectsWithTag("entity")
-                       .Select(x => x.GetComponent<Entity>()).Where(x => x != null && x.team == team);
+            .FindGameObjectsWithTag("entity")
+            .Select(x => x.GetComponent<Entity>())
+            .Where(x => x != null && x.team == team);
         //   .Where(x => x != null && x.team == team)
         //   .ToList();
 
@@ -105,10 +107,13 @@ public class Clustering : MonoBehaviour
         while (groups.Count < 10)
         {
             var pick = myTeamCharacters
-               .Where(character => !groups.Any(group => group.GetEntities().Contains(character)))
-           .OrderBy(character =>
-                 groups.Sum(group => -Vector3.Distance(character.transform.position, group.center))
-             ).FirstOrDefault();
+                .Where(character => !groups.Any(group => group.GetEntities().Contains(character)))
+                .OrderBy(character =>
+                    groups.Sum(group =>
+                        -Vector3.Distance(character.transform.position, group.center)
+                    )
+                )
+                .FirstOrDefault();
 
             Group group = new Group
             {
@@ -119,10 +124,7 @@ public class Clustering : MonoBehaviour
 
             // グループをリストに追加
             groups.Add(group);
-
         }
-
-
 
         StartCoroutine(groupMarge());
         // StartCoroutine(addGroupLoop());
@@ -134,22 +136,9 @@ public class Clustering : MonoBehaviour
             memberUpdate();
             groupDevision();
 
-
-
-
-            yield return new WaitForSeconds(0.5f);
-
-
-
-
-
-
-
+            yield return new WaitForSeconds(1f);
         }
-
     }
-
-
 
     // IEnumerator addGroupLoop()
     // {
@@ -191,18 +180,19 @@ public class Clustering : MonoBehaviour
     {
         foreach (var group in groups)
         {
+            var nearEntitys = hashSearch
+                .searchEntity(group.center, 10)
+                .Select(x => x.GetComponent<Entity>())
+                .Where(x => x != null && x.team == team);
 
-            var nearEntitys = hashSearch.searchEntity(group.center, 10);
             print(nearEntitys.Count());
             if (nearEntitys.Count() > 0)
             {
-
                 Vector3 totalPosition = Vector3.zero;
                 Vector3 averagePosition = Vector3.zero;
                 foreach (var entity in nearEntitys)
                 {
                     averagePosition += entity.transform.position;
-
                 }
                 averagePosition /= nearEntitys.Count();
 
@@ -224,27 +214,29 @@ public class Clustering : MonoBehaviour
             {
                 print(Vector3.Distance(group.center, entity.transform.position));
 
-                if (Vector3.Distance(group.center, entity.transform.position) > group.deviation * 2)//ここ適当
+                if (Vector3.Distance(group.center, entity.transform.position) > group.deviation * 1) //ここ適当
                 {
                     // 外れ値
-                    var outlier = group.GetEntities()
-                        .OrderBy(entity => -Vector3.Distance(group.center, entity.transform.position))
+                    var outlier = group
+                        .GetEntities()
+                        .OrderBy(entity =>
+                            -Vector3.Distance(group.center, entity.transform.position)
+                        )
                         .FirstOrDefault();
 
                     // 新しいグループを一時的なリストに追加
-                    groups.Add(new Group
-                    {
-                        entitys = new List<Entity> { outlier },
-                        center = outlier.transform.position
-                    });
+                    groups.Add(
+                        new Group
+                        {
+                            entitys = new List<Entity> { outlier },
+                            center = outlier.transform.position
+                        }
+                    );
                     return;
                 }
             }
         }
-
-
     }
-
 
     //k-meansっぽい感じで中身を設定
     void memberUpdate()
@@ -255,9 +247,9 @@ public class Clustering : MonoBehaviour
         }
 
         var myTeamCharacters = GameObject
-                     .FindGameObjectsWithTag("entity")
-                     .Select(x => x.GetComponent<Entity>())
-                  .Where(x => x != null && x.team == team);
+            .FindGameObjectsWithTag("entity")
+            .Select(x => x.GetComponent<Entity>())
+            .Where(x => x != null && x.team == team);
 
         foreach (var entity in myTeamCharacters)
         {
@@ -267,13 +259,10 @@ public class Clustering : MonoBehaviour
 
             nearestGroup?.entitys.Add(entity);
         }
-
-
     }
 
     IEnumerator groupMarge()
     {
-
         yield return new WaitForSeconds(1f);
         List<Group> groupsToRemove = new List<Group>();
         List<Group> groupsToAdd = new List<Group>();
@@ -302,7 +291,6 @@ public class Clustering : MonoBehaviour
                         };
 
                         groups.Add(newGroup);
-
 
                         groups.RemoveAt(j);
                         groups.RemoveAt(i);

@@ -113,9 +113,8 @@ public class hashSearch : MonoBehaviour
                     //     pos + new Vector3(0, 0, 0),
                     //     candidate.transform.position + new Vector3(0, 0, 0),
                     //     Color.white,
-                    //     0.01f
+                    //     0.5f
                     // );
-
 
                     // }
                     // else
