@@ -38,9 +38,13 @@ public class AIcommandV2 : MonoBehaviour
                     .OrderBy(x => Vector3.Distance(group.center, x.center));
 
                 Vector3 destination = new Vector3(0, 0, 0);
-                foreach (var othergroup in sortedGroups)
+                foreach (
+                    var othergroup in sortedGroups.OrderBy(g =>
+                        Vector3.Distance(group.center, g.center)
+                    )
+                )
                 {
-                    if (group.entitys.Count() + 2 >= othergroup.entitys.Count())
+                    if (group.power >= othergroup.power)
                     {
                         //勝てるので突進
                         destination = othergroup.center - group.center;

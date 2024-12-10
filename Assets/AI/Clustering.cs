@@ -74,6 +74,42 @@ public class Clustering : MonoBehaviour
             deviation = Mathf.Sqrt(deviation);
             return deviation;
         }
+
+        public float power;
+
+        public void powercalculate()
+        {
+            float power = 0;
+            foreach (var entity in entitys)
+            {
+                print(entity);
+                if (entity is Base)
+                {
+                    power -= 100;
+                    print("hotel");
+                }
+                if (entity is Hotel)
+                {
+                    power -= (100 - entity.hp);
+                    print("hotel");
+                }
+                else if (entity is Wall)
+                {
+                    power += entity.hp * 0;
+                    print("wall");
+                }
+                else if (entity is Builder)
+                {
+                    power += entity.hp * 0;
+                    print("Builder");
+                }
+                else
+                {
+                    print("そのた");
+                    power += entity.hp;
+                }
+            }
+        }
     }
 
     public List<Group> groups = new List<Group>();
@@ -185,7 +221,7 @@ public class Clustering : MonoBehaviour
                 .Select(x => x.GetComponent<Entity>())
                 .Where(x => x != null && x.team == team);
 
-            print(nearEntitys.Count());
+            // print(nearEntitys.Count());
             if (nearEntitys.Count() > 0)
             {
                 Vector3 totalPosition = Vector3.zero;
@@ -212,7 +248,7 @@ public class Clustering : MonoBehaviour
         {
             foreach (var entity in group.GetEntities())
             {
-                print(Vector3.Distance(group.center, entity.transform.position));
+                // print(Vector3.Distance(group.center, entity.transform.position));
 
                 if (Vector3.Distance(group.center, entity.transform.position) > group.deviation * 1) //ここ適当
                 {
@@ -281,7 +317,7 @@ public class Clustering : MonoBehaviour
 
                     if (distance < 5)
                     {
-                        print("マージ");
+                        // print("マージ");
 
                         // 新しいグループを作成して追加
                         var newGroup = new Group
@@ -301,6 +337,14 @@ public class Clustering : MonoBehaviour
                     yield return null;
                 }
             }
+        }
+    }
+
+    void powerUpdate()
+    {
+        foreach (var group in groups)
+        {
+            group.powercalculate();
         }
     }
 }
