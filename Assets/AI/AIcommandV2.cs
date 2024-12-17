@@ -44,7 +44,7 @@ public class AIcommandV2 : MonoBehaviour
                     )
                 )
                 {
-                    if (group.power + 5 >= othergroup.power || true)
+                    if (group.power + 5 >= othergroup.power)
                     {
                         //勝てるので突進
                         destination = othergroup.center - group.center;
@@ -85,6 +85,10 @@ public class AIcommandV2 : MonoBehaviour
                     NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
                     if (agent != null)
                     {
+                        vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
+
+                        Vector3 nowVector = entity.transform.position - nowDestination;
+
                         entity.GetComponent<NavMeshAgent>().destination =
                             entity.transform.position + destination;
                     }

@@ -250,7 +250,10 @@ public class Clustering : MonoBehaviour
             {
                 // print(Vector3.Distance(group.center, entity.transform.position));
 
-                if (Vector3.Distance(group.center, entity.transform.position) > group.deviation * 1) //ここ適当
+                if (
+                    Vector3.Distance(group.center, entity.transform.position)
+                    > group.deviation * 1.5f
+                ) //ここ適当
                 {
                     // 外れ値
                     var outlier = group
