@@ -25,7 +25,7 @@ public class EntityUI : MonoBehaviour
     void Update()
     {
         Canvas.rotation = Quaternion.Euler(90, 0, 0);
-        Tasktext();
+        // Tasktext();
         hpBar.maxValue = entity.maxHp;
         hpBar.value = entity.hp;
     }
