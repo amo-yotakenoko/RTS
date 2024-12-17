@@ -116,7 +116,7 @@ public class Clustering : MonoBehaviour
 
     private IEnumerator loop()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         var myTeamCharacters = GameObject
             .FindGameObjectsWithTag("entity")
             .Select(x => x.GetComponent<Entity>())

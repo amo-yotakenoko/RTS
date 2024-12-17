@@ -44,7 +44,7 @@ public class AIcommandV2 : MonoBehaviour
                     )
                 )
                 {
-                    if (group.power >= othergroup.power)
+                    if (group.power + 5 >= othergroup.power || true)
                     {
                         //勝てるので突進
                         destination = othergroup.center - group.center;
@@ -103,7 +103,6 @@ public class AIcommandV2 : MonoBehaviour
         foreach (var otherClustering in GetComponents<Clustering>())
         {
             if (otherClustering != clustaring)
-                // 各 Clustering の groups を null チェックして追加
                 if (otherClustering.groups != null)
                 {
                     allGroups.AddRange(otherClustering.groups);
