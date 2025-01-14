@@ -232,7 +232,7 @@ public class Clustering : MonoBehaviour
                 }
                 averagePosition /= nearEntitys.Count();
 
-                group.center = group.center * 0.0f + averagePosition * 1f;
+                group.center = group.center * 0.1f + averagePosition * 0.9f;
             }
             group.calculateDeviation();
         }

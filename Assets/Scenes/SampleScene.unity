@@ -1470,6 +1470,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clustaring: {fileID: 0}
   team: 4
+  structureDatabase: {fileID: 11400000, guid: 194511cf056c3a143b50f447f23e1dec, type: 2}
 --- !u!114 &1569515935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1484,6 +1485,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clustaring: {fileID: 0}
   team: 3
+  structureDatabase: {fileID: 11400000, guid: 194511cf056c3a143b50f447f23e1dec, type: 2}
 --- !u!114 &1569515936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1498,6 +1500,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clustaring: {fileID: 0}
   team: 2
+  structureDatabase: {fileID: 11400000, guid: 194511cf056c3a143b50f447f23e1dec, type: 2}
 --- !u!4 &1569515938
 Transform:
   m_ObjectHideFlags: 0
@@ -1542,6 +1545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clustaring: {fileID: 0}
   team: 1
+  structureDatabase: {fileID: 11400000, guid: 194511cf056c3a143b50f447f23e1dec, type: 2}
 --- !u!114 &1569515941
 MonoBehaviour:
   m_ObjectHideFlags: 0

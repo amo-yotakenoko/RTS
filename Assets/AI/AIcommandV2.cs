@@ -30,6 +30,7 @@ public class AIcommandV2 : MonoBehaviour
     IEnumerator loop()
     {
         yield return new WaitForSeconds(2f);
+        yield return constraction();
         while (true)
         {
             foreach (var group in clustaring.groups)
@@ -85,7 +86,7 @@ public class AIcommandV2 : MonoBehaviour
                     NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
                     if (agent != null)
                     {
-                        vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
+                        Vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
 
                         Vector3 nowVector = entity.transform.position - nowDestination;
 
@@ -96,6 +97,61 @@ public class AIcommandV2 : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    [SerializeField]
+    private StructureDatas structureDatabase;
+
+    IEnumerator constraction()
+    {
+        yield return null;
+        if (teamParameter.getteamParameter(team).money > 50)
+        {
+            print("たてる");
+            var structureData = structureDatabase
+                .structures.Where(x => x.name == "hotel")
+                .FirstOrDefault();
+
+            var strongestGroup = clustaring
+                .groups.OrderByDescending(group => group.power)
+                .FirstOrDefault();
+
+            // print($" {structureData.name}を建築");
+            yield return constractionPlace(
+                structureData,
+                strongestGroup.center + new Vector3(0, 0, 0)
+            );
+        }
+    }
+
+    IEnumerator constractionPlace(StructureData structureData, Vector3 position)
+    {
+        print($" {team}{structureData.name}をたてる");
+        var instantiatedStructure = Instantiate(
+                structureData.prefab,
+                position,
+                structureData.prefab.transform.rotation
+            )
+            .GetComponent<Structure>();
+        instantiatedStructure.status = Structure.Status.LocationChoseing;
+        instantiatedStructure.team = team;
+        instantiatedStructure.constractionCost = structureData.cost;
+        // instantiatedStructure.gameObject.name = "自動で建てた";
+        yield return null;
+        float randumRange = 0;
+        while (instantiatedStructure.isoverLap())
+        {
+            randumRange += 0.1f;
+            instantiatedStructure.transform.position =
+                position
+                + new Vector3(
+                    Random.Range(-randumRange, randumRange),
+                    0f,
+                    Random.Range(-randumRange, randumRange)
+                );
+            yield return null;
+        }
+        instantiatedStructure.ok();
     }
 
     public List<Clustering.Group> GetOtherGroups()

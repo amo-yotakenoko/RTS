@@ -25,6 +25,11 @@ public class Structure : Entity
     public Status status;
     drag drag;
 
+    public bool isoverLap()
+    {
+        return drag.isOverlapping() != 0;
+    }
+
     protected override void Start()
     {
         navMeshObstacle = GetComponent<NavMeshObstacle>();

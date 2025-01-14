@@ -91,7 +91,11 @@ public class command : MonoBehaviour
         print("groundOption");
         if (commandMenu != null)
             commandMenu.destroy();
-        commandMenu = Instantiate(commandMenuprefab, position + new Vector3(0, 1, 0), commandMenuprefab.transform.rotation)
+        commandMenu = Instantiate(
+                commandMenuprefab,
+                position + new Vector3(0, 1, 0),
+                commandMenuprefab.transform.rotation
+            )
             .GetComponent<commandMenu>();
         commandMenu.team = team;
 
