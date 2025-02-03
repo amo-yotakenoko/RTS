@@ -9,6 +9,9 @@ EditorUserSettings:
       value: 07550d5f56065959580b5a7114720744104f4e2f2e7a7260797f1b65e3e1613c
       flags: 0
     RecentlyUsedSceneGuid-1:
+      value: 0101025501045a095a0f5874127a0b4445151d722971706629284e30e4b36c6c
+      flags: 0
+    RecentlyUsedSceneGuid-2:
       value: 5a5757560101590a5d0c0e24427b5d44434e4c7a7b7a23677f2b4565b7b5353a
       flags: 0
     UnityEditor.ShaderGraph.Blackboard:
@@ -37,4 +40,6 @@ EditorUserSettings:
   m_VCHierarchyOverlayIcons: 1
   m_VCOtherOverlayIcons: 1
   m_VCAllowAsyncUpdate: 1
+  m_VCScanLocalPackagesOnConnect: 1
   m_ArtifactGarbageCollection: 1
+  m_CompressAssetsOnImport: 1

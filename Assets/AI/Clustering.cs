@@ -252,7 +252,7 @@ public class Clustering : MonoBehaviour
 
                 if (
                     Vector3.Distance(group.center, entity.transform.position)
-                    > group.deviation * 1.0f
+                    > group.deviation * 2f
                 ) //ここ適当
                 {
                     // 外れ値
