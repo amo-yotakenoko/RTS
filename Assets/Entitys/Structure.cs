@@ -99,6 +99,8 @@ public class Structure : Entity
 
     public void callBuilder() //Builderを呼ぶ関数,TODO:あんま遠い奴呼んでもしょうがないので距離or人数とかにする?
     {
+        if (status != Status.Constaracting)
+            return;
         print("Builder呼びたい");
         List<Builder> myTeamBuildes = GameObject
             .FindGameObjectsWithTag("entity")
@@ -113,6 +115,9 @@ public class Structure : Entity
             builder.setTask("buildStructureCMD", new object[] { this }, place: transform);
             // }
         }
+
+        Invoke("callBuilder", 1f);
+
     }
 
     public virtual void construction(int h) //builderが呼ぶ奴、引数分だけ建築が進んで良い感じにお金が引かれる

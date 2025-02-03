@@ -116,7 +116,7 @@ public class Clustering : MonoBehaviour
 
     private IEnumerator loop()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
         var myTeamCharacters = GameObject
             .FindGameObjectsWithTag("entity")
             .Select(x => x.GetComponent<Entity>())
@@ -252,7 +252,7 @@ public class Clustering : MonoBehaviour
 
                 if (
                     Vector3.Distance(group.center, entity.transform.position)
-                    > group.deviation * 1.5f
+                    > group.deviation * 1.0f
                 ) //ここ適当
                 {
                     // 外れ値

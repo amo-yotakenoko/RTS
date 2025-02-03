@@ -26,8 +26,14 @@ public class Character : Entity
         navmesh = GetComponent<NavMeshAgent>();
         line = gameObject.AddComponent<LineRenderer>();
         line.material = new Material(Shader.Find("Sprites/Default"));
-        line.startColor = Entity.teamColors[team];
-        line.endColor = Entity.teamColors[team];
+
+
+        Color teamColor = Entity.teamColors[team];
+        Color semiTransparentColor = new Color(teamColor.r, teamColor.g, teamColor.b, 0.2f);
+
+        line.startColor = semiTransparentColor;
+        line.endColor = semiTransparentColor;
+
         line.startWidth = 0.5f;
         line.endWidth = 0.00f;
     }
@@ -96,6 +102,7 @@ public class Character : Entity
                 //アタック中は移動を停止
                 navmesh.isStopped = true;
                 enemy.damage(5, this);
+                particle.PlayAttackEffect((enemy.transform.position + this.transform.position) / 2);
                 yield return new WaitForSeconds(0.2f); //クールタイム
                 navmesh.isStopped = false;
             }

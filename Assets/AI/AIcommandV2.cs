@@ -29,7 +29,7 @@ public class AIcommandV2 : MonoBehaviour
 
     IEnumerator loop()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         yield return constraction();
         while (true)
         {
@@ -48,7 +48,10 @@ public class AIcommandV2 : MonoBehaviour
                     if (group.power + 5 >= othergroup.power)
                     {
                         //勝てるので突進
-                        destination = othergroup.center - group.center;
+                        Vector3 direction = (othergroup.center - group.center).normalized;
+                        float moveDistance = Mathf.Min(Vector3.Distance(group.center, othergroup.center), 5f);
+                        destination = -(group.center + direction * moveDistance);
+
                         break;
                     }
                     else
@@ -105,7 +108,7 @@ public class AIcommandV2 : MonoBehaviour
     IEnumerator constraction()
     {
         yield return null;
-        if (teamParameter.getteamParameter(team).money > 50)
+        if (teamParameter.getteamParameter(team).money > 120)
         {
             print("たてる");
             var structureData = structureDatabase

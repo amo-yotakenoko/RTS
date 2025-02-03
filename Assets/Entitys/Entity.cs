@@ -76,6 +76,7 @@ public class Entity : MonoBehaviour
     //オーバーライトして消滅せず壊れるだけにしてもいい
     protected virtual void killed(Entity attacked = null)
     {
+        particle.PlayDestroyEffect(this.transform.position);
         Destroy(this.gameObject);
         // team = attackedTeam;
         // hp = maxHp;
@@ -153,6 +154,7 @@ public class Entity : MonoBehaviour
     public IEnumerator DestroyCMD()
     {
         Destroy(this.gameObject);
+        particle.PlayDestroyEffect(this.transform.position);
         yield return null;
     }
 }

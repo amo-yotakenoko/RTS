@@ -22,6 +22,7 @@ public class terrain : MonoBehaviour
 
     IEnumerator makeGround()
     {
+        yield return new WaitForSeconds(3);
         TerrainData genTerrain = GetComponent<Terrain>().terrainData;
         var heights = new float[genTerrain.heightmapResolution, genTerrain.heightmapResolution];
 
@@ -30,6 +31,14 @@ public class terrain : MonoBehaviour
         {
             for (int y = -75; y < 75; y += 3)
             {
+
+                if (Vector3.Distance(new Vector3(x, 0, y), new Vector3(-40, 0, -40)) <= 15 ||
+                    Vector3.Distance(new Vector3(x, 0, y), new Vector3(40, 0, -40)) <= 15 ||
+                    Vector3.Distance(new Vector3(x, 0, y), new Vector3(-40, 0, 40)) <= 15 ||
+                    Vector3.Distance(new Vector3(x, 0, y), new Vector3(40, 0, 40)) <= 15)
+                    // Instantiate(treePrefab, new Vector3(x, 0, y), transform.rotation);
+                    continue;
+
                 // Terrainの高さをセット
                 // heights[x, y] = perlinNoiseHeight(x, y);
                 // heights[x, y] = 0;
