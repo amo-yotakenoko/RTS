@@ -150,7 +150,7 @@ public class Clustering : MonoBehaviour
                     )
                 )
                 .FirstOrDefault();
-
+            // if (pick == null) continue;
             Group group = new Group
             {
                 // transform = pick.transform,

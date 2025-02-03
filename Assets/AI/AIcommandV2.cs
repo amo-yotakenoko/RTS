@@ -29,74 +29,83 @@ public class AIcommandV2 : MonoBehaviour
 
     IEnumerator loop()
     {
+        print("loop");
         yield return new WaitForSeconds(1f);
-        yield return constraction();
         while (true)
         {
-            foreach (var group in clustaring.groups)
+            yield return constraction();
+            try
             {
-                var sortedGroups = GetOtherGroups()
-                    .OrderBy(x => Vector3.Distance(group.center, x.center));
 
-                Vector3 destination = new Vector3(0, 0, 0);
-                foreach (
-                    var othergroup in sortedGroups.OrderBy(g =>
-                        Vector3.Distance(group.center, g.center)
-                    )
-                )
+                foreach (var group in clustaring.groups)
                 {
-                    if (group.power + 5 >= othergroup.power)
-                    {
-                        //勝てるので突進
-                        Vector3 direction = (othergroup.center - group.center).normalized;
-                        float moveDistance = Mathf.Min(Vector3.Distance(group.center, othergroup.center), 5f);
-                        destination = -(group.center + direction * moveDistance);
+                    var sortedGroups = GetOtherGroups()
+                        .OrderBy(x => Vector3.Distance(group.center, x.center));
 
-                        break;
-                    }
-                    else
+                    Vector3 destination = new Vector3(0, 0, 0);
+                    foreach (
+                        var othergroup in sortedGroups.OrderBy(g =>
+                            Vector3.Distance(group.center, g.center)
+                        )
+                    )
                     {
-                        // Ally:味方
-                        var nearAllyGroup = clustaring
-                            .groups.Where(g => g != group) // 自分自身を除外
-                            .OrderBy(g => Vector3.Distance(group.center, g.center)) // 距離でソート
-                            .FirstOrDefault(); // 最も近いグループを取得
-
-                        if (nearAllyGroup != null)
+                        if (group.power + 5 >= othergroup.power)
                         {
-                            destination = (nearAllyGroup.center - group.center);
+                            //勝てるので突進
+                            Vector3 direction = (othergroup.center - group.center).normalized;
+                            float moveDistance = Mathf.Min(Vector3.Distance(group.center, othergroup.center), 5f);
+                            destination = -(group.center + direction * moveDistance);
+
                             break;
                         }
-                    }
-                }
-
-                foreach (var entity in group.entitys)
-                {
-                    if (entity is Character character)
-                    {
-                        // `entity` が `Character` 型の場合に処理を続行
-                        Entity attackEntity = character.getWithInReachEntity();
-
-                        if (attackEntity != null)
+                        else
                         {
-                            entity.setTask("AttackCMD", new object[] { null });
+                            // Ally:味方
+                            var nearAllyGroup = clustaring
+                                .groups.Where(g => g != group) // 自分自身を除外
+                                .OrderBy(g => Vector3.Distance(group.center, g.center)) // 距離でソート
+                                .FirstOrDefault(); // 最も近いグループを取得
+
+                            if (nearAllyGroup != null)
+                            {
+                                destination = (nearAllyGroup.center - group.center);
+                                break;
+                            }
                         }
                     }
 
-                    if (entity.Tasks.Count() > 0)
-                        continue;
-
-                    NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
-                    if (agent != null)
+                    foreach (var entity in group.entitys)
                     {
-                        Vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
+                        if (entity is Character character)
+                        {
+                            // `entity` が `Character` 型の場合に処理を続行
+                            Entity attackEntity = character.getWithInReachEntity();
 
-                        Vector3 nowVector = entity.transform.position - nowDestination;
+                            if (attackEntity != null)
+                            {
+                                entity.setTask("AttackCMD", new object[] { null });
+                            }
+                        }
 
-                        entity.GetComponent<NavMeshAgent>().destination =
-                            entity.transform.position + destination;
+                        if (entity.Tasks.Count() > 0)
+                            continue;
+
+                        NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
+                        if (agent != null)
+                        {
+                            Vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
+
+                            Vector3 nowVector = entity.transform.position - nowDestination;
+
+                            entity.GetComponent<NavMeshAgent>().destination =
+                                entity.transform.position + destination;
+                        }
                     }
                 }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("エラーが発生しました: " + e.Message);
             }
             yield return null;
         }
@@ -107,6 +116,7 @@ public class AIcommandV2 : MonoBehaviour
 
     IEnumerator constraction()
     {
+        print("たてたい" + teamParameter.getteamParameter(team).money);
         yield return null;
         if (teamParameter.getteamParameter(team).money > 120)
         {
@@ -141,10 +151,12 @@ public class AIcommandV2 : MonoBehaviour
         instantiatedStructure.constractionCost = structureData.cost;
         // instantiatedStructure.gameObject.name = "自動で建てた";
         yield return null;
-        float randumRange = 0;
+        float randumRange = 5;
         while (instantiatedStructure.isoverLap())
         {
-            randumRange += 0.1f;
+            if (instantiatedStructure == null)
+                yield break;
+            randumRange += 1f;
             instantiatedStructure.transform.position =
                 position
                 + new Vector3(
