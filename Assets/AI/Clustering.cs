@@ -138,28 +138,36 @@ public class Clustering : MonoBehaviour
         //     groups.Add(group);
         // }
 
-
-        //k means++っぽい感じで初期値を設定
-        while (groups.Count < 10)
+        try
         {
-            var pick = myTeamCharacters
-                .Where(character => !groups.Any(group => group.GetEntities().Contains(character)))
-                .OrderBy(character =>
-                    groups.Sum(group =>
-                        -Vector3.Distance(character.transform.position, group.center)
-                    )
-                )
-                .FirstOrDefault();
-            // if (pick == null) continue;
-            Group group = new Group
+            //k means++っぽい感じで初期値を設定
+            while (groups.Count < 10)
             {
-                // transform = pick.transform,
-                entitys = new List<Entity> { },
-                center = pick.transform.position
-            };
+                var pick = myTeamCharacters
+                    .Where(character =>
+                        !groups.Any(group => group.GetEntities().Contains(character))
+                    )
+                    .OrderBy(character =>
+                        groups.Sum(group =>
+                            -Vector3.Distance(character.transform.position, group.center)
+                        )
+                    )
+                    .FirstOrDefault();
+                // if (pick == null) continue;
+                Group group = new Group
+                {
+                    // transform = pick.transform,
+                    entitys = new List<Entity> { },
+                    center = pick.transform.position
+                };
 
-            // グループをリストに追加
-            groups.Add(group);
+                // グループをリストに追加
+                groups.Add(group);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("エラーが発生しました: " + e.Message);
         }
 
         StartCoroutine(groupMarge());
