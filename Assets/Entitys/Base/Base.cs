@@ -5,6 +5,7 @@ using UnityEngine;
 public class Base : Structure
 {
     public GameObject soldier;
+
     [Cost(10)]
     public IEnumerator SexForSoldierCMD()
     {
@@ -13,10 +14,14 @@ public class Base : Structure
         yield return new WaitForSeconds(3);
         var instance = Instantiate(soldier);
         instance.GetComponent<Entity>().team = this.team;
-        instance.transform.position = this.transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)); ;
+        instance.transform.position =
+            this.transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        ;
         yield return null;
     }
+
     public GameObject builder;
+
     [Cost(15)]
     public IEnumerator SexForBuilderCMD()
     {
@@ -25,23 +30,21 @@ public class Base : Structure
         yield return new WaitForSeconds(3);
         var instance = Instantiate(builder);
         instance.GetComponent<Entity>().team = this.team;
-        instance.transform.position = this.transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)); ;
+        instance.transform.position =
+            this.transform.position + new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f));
+        ;
         yield return null;
     }
 
-
     public void Update()
     {
-
         base.Update();
-
     }
 
     public void Start()
     {
         base.Start();
-        StartCoroutine(continueSex());
-
+        // StartCoroutine(continueSex());
     }
 
     IEnumerator continueSex()

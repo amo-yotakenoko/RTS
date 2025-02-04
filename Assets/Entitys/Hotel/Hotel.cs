@@ -41,7 +41,12 @@ public class Hotel : Structure
         base.Update();
         if (status == Status.Complete && Tasks.Count == 0)
         {
-            setTask("SexForSoldierCMD", new object[] { }, priority: 0);
+            int cost = 5;
+            if (teamParameter.getteamParameter(team).money > cost)
+            {
+                teamParameter.getteamParameter(team).money -= cost;
+                setTask("SexForSoldierCMD", new object[] { }, priority: 0);
+            }
         }
     }
 }

@@ -85,6 +85,7 @@ public class AIcommandV2 : MonoBehaviour
 
                             if (attackEntity != null)
                             {
+                                print("attack");
                                 entity.setTask("AttackCMD", new object[] { null });
                             }
                         }
@@ -168,8 +169,6 @@ public class AIcommandV2 : MonoBehaviour
         float randumRange = 5;
         while (instantiatedStructure.isoverLap())
         {
-            if (instantiatedStructure == null)
-                yield break;
             randumRange += 1f;
             instantiatedStructure.transform.position =
                 position
@@ -179,6 +178,8 @@ public class AIcommandV2 : MonoBehaviour
                     Random.Range(-randumRange, randumRange)
                 );
             yield return null;
+            if (instantiatedStructure == null)
+                yield break;
         }
         instantiatedStructure.ok();
     }
