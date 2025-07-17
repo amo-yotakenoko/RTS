@@ -36,7 +36,6 @@ public class AIcommandV2 : MonoBehaviour
             yield return constraction();
             try
             {
-
                 foreach (var group in clustaring.groups)
                 {
                     var sortedGroups = GetOtherGroups()
@@ -53,7 +52,10 @@ public class AIcommandV2 : MonoBehaviour
                         {
                             //勝てるので突進
                             Vector3 direction = (othergroup.center - group.center).normalized;
-                            float moveDistance = Mathf.Min(Vector3.Distance(group.center, othergroup.center), 5f);
+                            float moveDistance = Mathf.Min(
+                                Vector3.Distance(group.center, othergroup.center),
+                                5f
+                            );
                             destination = -(group.center + direction * moveDistance);
 
                             break;
@@ -83,6 +85,7 @@ public class AIcommandV2 : MonoBehaviour
 
                             if (attackEntity != null)
                             {
+                                print("attack");
                                 entity.setTask("AttackCMD", new object[] { null });
                             }
                         }
@@ -93,7 +96,9 @@ public class AIcommandV2 : MonoBehaviour
                         NavMeshAgent agent = entity.GetComponent<NavMeshAgent>();
                         if (agent != null)
                         {
-                            Vector3 nowDestination = entity.GetComponent<NavMeshAgent>().destination;
+                            Vector3 nowDestination = entity
+                                .GetComponent<NavMeshAgent>()
+                                .destination;
 
                             Vector3 nowVector = entity.transform.position - nowDestination;
 
@@ -118,22 +123,32 @@ public class AIcommandV2 : MonoBehaviour
     {
         print("たてたい" + teamParameter.getteamParameter(team).money);
         yield return null;
+
         if (teamParameter.getteamParameter(team).money > 120)
         {
-            print("たてる");
-            var structureData = structureDatabase
-                .structures.Where(x => x.name == "hotel")
-                .FirstOrDefault();
+            bool allComplete = GameObject
+                .FindGameObjectsWithTag("entity")
+                .Select(x => x.GetComponent<Structure>())
+                .Where(x => x != null && x.team == team)
+                .All(s => s.status == Structure.Status.Complete);
 
-            var strongestGroup = clustaring
-                .groups.OrderByDescending(group => group.power)
-                .FirstOrDefault();
+            if (allComplete)
+            {
+                print("たてる");
+                var structureData = structureDatabase
+                    .structures.Where(x => x.name == "hotel")
+                    .FirstOrDefault();
 
-            // print($" {structureData.name}を建築");
-            yield return constractionPlace(
-                structureData,
-                strongestGroup.center + new Vector3(0, 0, 0)
-            );
+                var strongestGroup = clustaring
+                    .groups.OrderByDescending(group => group.power)
+                    .FirstOrDefault();
+
+                // print($" {structureData.name}を建築");
+                yield return constractionPlace(
+                    structureData,
+                    strongestGroup.center + new Vector3(0, 0, 0)
+                );
+            }
         }
     }
 
@@ -154,8 +169,6 @@ public class AIcommandV2 : MonoBehaviour
         float randumRange = 5;
         while (instantiatedStructure.isoverLap())
         {
-            if (instantiatedStructure == null)
-                yield break;
             randumRange += 1f;
             instantiatedStructure.transform.position =
                 position
@@ -165,6 +178,8 @@ public class AIcommandV2 : MonoBehaviour
                     Random.Range(-randumRange, randumRange)
                 );
             yield return null;
+            if (instantiatedStructure == null)
+                yield break;
         }
         instantiatedStructure.ok();
     }
